@@ -15,6 +15,15 @@ struct Usuarios {
     char nome[30];
 };
 
+struct Itens {      
+    int condigo[6];
+    char tipo[1];
+    char titulo[30];
+    char autor[30]
+    char editora[15];
+    int  ano;
+};
+
 //usuario
 void menuUsuarios();
 void CadastarUsuarios(Usuarios usuario[],int& cont);
