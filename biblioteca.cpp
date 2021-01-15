@@ -5,85 +5,36 @@
 #include <string.h>
 #include <locale.h>
 
-//menu principal
-void menuPrincipal();
 
 //STRUCTS
 
-struct Usuarios {      
+ struct Usuario {      
     long long int cpf;
     char nome[30];
 };
 
-struct Itens {      
-    int condigo[6];
-    char tipo[1];
-    char titulo[30];
-    char autor[30]
-    char editora[15];
-    int  ano;
-};
 
 //usuario
-void menuUsuarios();
-void CadastarUsuarios(Usuarios usuario[],int& cont);
-void ExclusaoUsuarios();
-void ListarUsuarios(Usuarios usuario[],int cont);
 
-//Intens
-void menuItens();
-void CadastarItens();
-void EmprestimoDevolucao();
-
-//Validação
-bool ValidarString(char string[],int menor, int maior);
-bool ValidaCpf(long long int cpf);
+void menuUsuario(Usuario usuario[], int& cont);
+void CadastarUsuario(Usuario usuario[], int& cont);
+void ListarUsuarios(Usuario usuario[],int cont);
+void ExcluirCPF(Usuario* excluir,int& cont, long long int cpf);
 
 
 
-int main(){
-	setlocale(LC_ALL, "Portuguese");
-    menuPrincipal();
-    
-}
-
-
-
-//Menu principal------------------------------------------------------------------------------
-void menuPrincipal(){
-	int input;
+//validação
+bool ValidaCpf(long long int cpf){
 	
-    do {
-        printf("\n");
-        printf ("Menu Principal \n");
-        printf("1 - Cadastro de usuários \n");
-        printf("2 - Cadastro de Itens da biblioteca \n");
-        printf("3 - Empréstimo/devolução \n");
-        printf("4 - Fim \n");        
-        fflush(stdin);
-        scanf("%d", &input);
-        system("cls");
-        switch(input)
-        {
-        case 1:
-            menuUsuarios();
-            break;
-        case 2:
-        	menuItens();
-            break;
-        case 3:
-        	EmprestimoDevolucao();
-            break;        
-        case 4:
-            exit(EXIT_SUCCESS);
-        default:
-            printf ("\n Opção inválida!\n");
-            fflush(stdin);
-            menuPrincipal();
-        }
-    }
-    while(input != 0);
-    system("cls");
+	if(cpf>9999999999 && cpf<100000000000){
+		
+		return true;
+	}else{
+		
+		return false;
+	}
+
+	
 }
 
 
@@ -102,35 +53,7 @@ if(strlen(string)>=menor && strlen(string)<=maior){
 	
 }
 
-
-bool ValidaCpf(long long int cpf){
-	
-	if(cpf>9999999999 && cpf<100000000000){
-		
-		return true;
-	}else{
-		
-		return false;
-	}
-
-	
-}
-
-
-bool ValidarNumero(int numero, int menor, int maior){
-	
-if(numero>=menor && numero<=maior){
-	
-	return true;
-	
-}else{
-	
-	return false;
-	
-}
-	
-}
-
+//espaços
 
 void ImprimirEspaco(int n){
 	
@@ -143,26 +66,127 @@ void ImprimirEspaco(int n){
 }
 
 
-void StringMaiuscula(char* string){
-    while ((*string = (char) toupper(*string))) string++;
+//busca
+
+bool BuscaCpf(Usuario usuario[],long long int cpf,int cont){
+	bool result=false;
+	
+	
+for(int i=0;i<=cont;i++){
+	/*
+	printf("%d \n",i);
+	printf("%lli \n",usuario[i].cpf);
+	printf("%lli \n",cpf);
+	*/
+	
+	if(cpf==usuario[i].cpf){
+		
+		result = true;
+		break;
+	}
+	
+}
+
+return result;
+	
+}
+
+
+//ordenação
+
+void OrdenaCPF(Usuario* ordena,int cont){
+   int i, j;
+   char copia[100];
+   struct Usuario aux;
+   
+   for (j=cont-1; j>=0; j--){
+        for (i=0; i<=j; i++){
+            if (ordena[i].cpf > ordena[i+1].cpf){                            
+                aux = ordena[i];
+                ordena[i] = ordena[i+1];
+                ordena[i+1] = aux;             
+            }
+        }
+    }
+}
+
+void OrdenaNome(Usuario* ordena,int cont){
+   int i, j;
+   char copia[100];
+   struct Usuario aux;
+   
+   printf("%d ordenado por nome \n",cont);
+   
+   for (j=cont-1; j>=0; j--){
+        for (i=0; i<=j; i++){
+            if (strcoll(ordena[i].nome,ordena[i+1].nome)> 0){                            
+                aux = ordena[i];
+                ordena[i] = ordena[i+1];
+                ordena[i+1] = aux;             
+            }
+        }
+    }
 }
 
 
 
 
+//excluir
+void ExcluirCPF(Usuario* excluir,int& cont, long long int cpf){
+
+printf("Exluir\n");
+
+//cpf=10907926894;
+
+ int i;
+
+for (i=0; i <= cont; i++)
+{
+    if(excluir[i].cpf == cpf)
+    {
+        while(i <= cont-1)
+        {
+            excluir[i] = excluir[i+1];
+            i++;
+        }
+        cont--;        
+        break;
+    }
+    
+}
+
+}
+	
 
 
+//listar
 
+void ListarUsuarios(Usuario usuario[],int cont){
+	
+	printf("--------------------------------------------------\n");
+	printf("CPF         Nome\n");
+	printf("--------------------------------------------------\n");
+
+	for(int i=0;i<=cont;i++){
+		printf("%lli",usuario[i].cpf);
+		ImprimirEspaco(1);
+		printf("%s",usuario[i].nome);
+		
+		printf("\n");	
+	}
+	fflush(stdin);
+	getchar();
+    system("cls");
+}
+
+
+  
 //Menu de usuários -------------------------------------------------------------------------
 
-void menuUsuarios()
-{
-	int input=0,cont=0;
-	
-	Usuarios usuario[50];
-	
-    do
-    {
+void menuUsuario(Usuario usuario[], int& cont){
+	int input=0;
+	long long int cpf;
+	 do{
         printf("\n");
         printf ("Menu de Cadastro de Usuários \n");
         printf("1 - Cadastrar novo usuário \n");
@@ -176,31 +200,48 @@ void menuUsuarios()
         switch(input)
         {
         case 1:
-        	if(cont<50){
-        		CadastarUsuarios(usuario,cont);
-			}else{
-				
-				printf("Quantidade de Usuário esgotada!");
-			}
+        	
+        	CadastarUsuario(usuario,cont);
+        
             break;
         case 2:
-        	ExclusaoUsuarios();
+        	printf("CPF: ");
+        	scanf("%lli",&cpf);
+        	
+        	if(BuscaCpf(usuario,cpf,cont)){
+        	   ExcluirCPF(usuario,cont,cpf);
+        	   printf("Exclusao realizada com sucesso!");
+        	   fflush(stdin);
+        	   getchar();
+        	   
+			}else{
+				printf("Erro na exclusao. Usuario nao cadastrado!");
+				fflush(stdin);
+				getchar();
+			}
+        	
+        	
+        
             break;
         case 3:
-        	system("cls");
-        	fflush(stdin);
+        	
+        	OrdenaCPF(usuario,cont);
         	ListarUsuarios(usuario,cont);
+        	
             break;   
 	    case 4:
-          ListarUsuarios(usuario,cont);
+	    	
+	    	OrdenaNome(usuario,cont);
+	    	ListarUsuarios(usuario,cont);
+         
 			break;      
         case 5:
-            menuPrincipal();
-            system("cls");
+             system("cls");
+             input=0;
         default:
             printf ("\n Opcao invalida!\n");
             fflush(stdin);
-            menuUsuarios();
+            
         }
     }
     while(input != 0);
@@ -211,429 +252,152 @@ void menuUsuarios()
 
 //Cadastro de usuários ------------------------------------------------------------------------------------------
 
-void CadastarUsuarios(Usuarios usuario[],int& cont){
+void CadastarUsuario(Usuario usuario[], int& cont){
 	
-		int input=0;
-		long long int cpf;
-		char nome[30];
+usuario[0].cpf=10907926894;
+strcpy(usuario[0].nome,"ZAIAS BISPO DOS SANTOS");
+
+usuario[1].cpf=54593229799;
+strcpy(usuario[1].nome,"MARINA FERRUCCI BEGA");
+
+usuario[2].cpf=11533741883;
+strcpy(usuario[2].nome,"WALDIR CLAUDIO DE CASTRO JUNIOR");
+
+usuario[3].cpf=37909198884;
+strcpy(usuario[3].nome,"REGINA LOURENÇO DE BARROS");
+
+usuario[4].cpf=27672903829;
+strcpy(usuario[4].nome,"ALINE NUNES DE OLIVEIRA MACHAD");
+
+cont=4;
 	
-    	//cadastra cpf
-    	   
+	
+	
+	
+/*
+   int input=0;
+    long long int cpf;
+	char nome[30];
+	
+	
+	
+	
+    	//cadastra cpf    	   
         printf("CPF: ");
-         scanf("%lli", &cpf);       
+         scanf("%lli", &cpf);  		     
          fflush(stdin);
-      
-      
-        if(ValidaCpf(cpf)){
-        
-        	printf("\nErro no cadastro. Item ja cadastrado!\n");
-        	input++;
-		}else{
-			
-			printf("CPF  maior ou menor que 11 caracteres!");
-			getchar();
-		//	CadastarUsuarios(Usuarios usuario[],int cont);
-			menuUsuarios();
-			
-		}
-       
-      
-	
-		// Cadastrar nome
-	
-		  do{
-		printf("Nome: ");
-        gets(nome);
-        fflush(stdin);
          
-         
-         if(ValidarString(nome,4,30)){
-           
-        	//	printf("\n Nome  cadastrado\n");
-        		input++;
-           
-		}else{
-			
-			printf("Nome maior que 30 caracters!");
-			getchar();
-			system("cls"); 
-			
-		}
-	}while (ValidarString(nome,4,30)==false);
-		
-		
-		
-		if(input==2){
-		strcpy(usuario[cont].nome, nome);	    
-	    usuario[cont].cpf=cpf;
-			
-		cont++;		
-		printf("\nCadastro realizado com sucesso!");	
-		getchar();
-		system("cls"); 
-		}
-        
-       
-}
-
-
-
-
-
-//Exclusão de usuário --------------------------------------------------------------------------------------------
-
-void ExclusaoUsuarios(){
-	long long int cpf;
-	int input;
-	
-	
-		//pesquisar cpf
-    	   
-        printf("CPF: ");
-         scanf("%lli", &cpf);       
-         fflush(stdin);
-      
-      
-        if(ValidaCpf(cpf)){
-        	
-        //	exclusão de usuário   
-		     
-        	input++;
-        	
-		}else{
-			
-			printf("CPF  maior ou menor que 11 caracteres!");
-			getchar();
-		//	CadastarUsuarios();
-			
-		}
-		
-		
-		if(input!=0){
-			
-			printf("Cadastro realizado com sucesso!");
-		}
-	
-}
-
-
-
-
-//Listar usuário-------------------------------------------------------------------------------------------
-
-void ListarUsuarios(Usuarios usuario[],int cont){
-	
-	printf("--------------------------------------------------\n");
-	printf("CPF         Nome\n");
-	printf("--------------------------------------------------\n");
-
-	for(int i=0;i<cont;i++){
-		printf("%lli",usuario[i].cpf);
-		ImprimirEspaco(1);
-		printf("%s",usuario[i].nome);
-		
-		printf("\n");	
-	}
-	getchar();
-    system("cls");
-}
-        
-        
- 
-
-
-
-
-
-//menu cadastro de itens ---------------------------------------------------------------------------------
-
-void menuItens(){
-	int input;
-	
-    do
-    {
-        printf("\n");
-        printf ("Menu de Cadastro de Itens \n");
-        printf("1 - Cadastrar novo item \n");
-        printf("2 - Excluir item \n");
-        printf("3 - Listar itens (ordenado por código) \n");
-        printf("4 - Listar itens (ordenado por titulo) \n");  
-		printf("5 - Voltar \n");        
-        fflush(stdin);
-        scanf("%d", &input);
-        system("cls");
-        switch(input)
-        {
-        case 1:
-            CadastarItens();
-            break;
-        case 2:
-        	printf("2 - Excluir item \n");
-            break;
-        case 3:
-            printf("3 - Listar itens (ordenado por código) \n");
-            break;   
-	    case 4:
-            printf("4 - Listar itens (ordenado por titulo) \n");
-			break;      
-        case 5:
-            menuPrincipal();
-            system("cls");
-        default:
-            printf ("\n Opcao invalida!\n");
-            fflush(stdin);
-            menuItens();
-        }
-    }
-    while(input != 0);
-    system("cls");
-}
-
-
-//Cadastro de Itens ------------------------------------------------------------------------------------------
-
-void CadastarItens(){
-	
-	int codigo,input=0,ano;
-	char tipo[1],titulo[30],autor[30],editora[15];
-	
-	//cadastra codigo
-    	   
-        printf("Código: ");
-         scanf("%d", &codigo);       
-         fflush(stdin);	
-         
-         if(ValidarNumero(codigo,1,999999)){
+         if(ValidaCpf(cpf)){
          	
-         	//implementar cadastro
          	
-         	printf("Código: %d \n", codigo);
-         	printf("Erro no cadastro. Item ja cadastrado!\n");
-         	input++;
-         	
+         if(BuscaCpf(usuario,cpf,cont)){
+    	
+       	printf("Erro no cadastro. CPF ja cadastrado!");
+       	menuUsuario(usuario,cont);
+    	
+     	}else{
+		
+		cont++;
+		usuario[cont].cpf=cpf;
+		
+	    }
+   
 		 }else{
 		 	
-		 	printf("Código precisa ser possitivo de até 6 caracteres!");
-		 	getchar();
-		 	CadastarItens();
+		 	printf("Erro no cadastro!");
+		 	menuUsuario(usuario,cont);
 		 }
 		 
 		 
-		 
-	// cadastrar tipo	 
-	
-	do{	
-	printf("Tipo: ");
-	scanf("%s",tipo);
-	fflush(stdin);	
-	StringMaiuscula(tipo);
-	
-	
-	if(stricmp(tipo,"R")==0 || stricmp(tipo,"L")==0){
-		
-		
-	//implementar cadastro	
-	input++;
-		
-	}else{
-	
-	printf("\nO Tipo não é  R para Resvistas ou  L para Livros!\n");
-	getchar();
-	system("cls"); 
-	}	
-	
-		 
-}while(stricmp (tipo,"R")!=0 && stricmp (tipo,"L")!=0);
-		 
-		 
-		 
-	
-
-
-
-//cadastrar titulo
-
-do{
-	
-	printf("Titulo: ");
-	scanf("%s",titulo);
-	fflush(stdin);	
-	StringMaiuscula(tipo);
-	
-	if(ValidarString(titulo,4,30)){
-		
-		input++;
-		
-	}else{
-	
-	printf("\nTitulo é menor que 4 ou maior que 30 caracteres!\n");	
-	getchar();
-	system("cls");	
-	}	
-	
-		 
-}while(ValidarString(titulo,4,30)==false);
-		 
-		 
-		 
-//cadastrar Autor
-
-if(stricmp(tipo,"L")==0){
-
-do{
-	
-	printf("Autor: ");
-	scanf("%s",autor);
-	fflush(stdin);	
-	StringMaiuscula(autor);
-	
-	if(ValidarString(autor,4,30)){
-		
-		input++;
-		
-	}else{
-	
-	printf("\nTitulo é menor que 4 ou maior que 30 caracteres!\n");	
-	getchar();
-	system("cls");	
-	}	
-	
-		 
-}while(ValidarString(autor,4,30)==false);		 
-		 
-}
-
-
-//cadastrar Editora
-
-do{
-	
-	printf("Editora: ");
-	scanf("%s",editora);
-	fflush(stdin);	
-	StringMaiuscula(editora);
-	
-	if(ValidarString(editora,4,30)){
-		
-		input++;
-		
-	}else{
-	
-	printf("\nEditora é menor que 4 ou maior que 30 caracteres!\n");	
-	getchar();
-	system("cls");	
-	}	
-	
-		 
-}while(ValidarString(editora,4,15)==false);	
-
-
-
-//cadastrar Ano
-
-do{
-	
-	printf("Ano: ");
-	scanf("%d",&ano);
-	fflush(stdin);	
-		
-	if(ValidarNumero(ano,1,9999)){
-		
-	input++;	
-		
-	}else{
-	
-	printf("\nAno precisa ser possitivo de até 6 caracteres!\n");	
-	getchar();
-	system("cls");	
-	}	
-	
-		 
-}while(ValidarNumero(ano,1,9999)==false);		 
-		 
-
-
-		 
-		 
-		 
-		 
-		 if(input>4 && input<7){
 		 	
-		 	printf("Cadastro realizado com sucesso!");
-		 	getchar();
-	        system("cls");
-		 }
-         
-	
-}
-
-
-
-
-
-//Exclusão de Itens --------------------------------------------------------------------------------------------
-
-void ExclusaoItens(){
-	
-       
-}
-
-
-
-
-//Listar Itens-------------------------------------------------------------------------------------------
-
-void ListarItens(int tipo){
-		
-}
+		//nome
+	 
+	 do{
+	 	
+	 	printf("Nome: ");
+        gets(nome);
+        fflush(stdin);
         
+        if(ValidarString(nome,4,30)){
+        	
+        	strcpy(usuario[cont].nome,nome);
+        	
+        		printf("Cadastro realizado com sucesso!");	
+        		getchar();
+        		system("cls");
+        	
+		}else{
+			
+			printf("Erro");
+			getchar();
+			fflush(stdin);
+		}
+        
+	 	
+	 }while(ValidarString(nome,4,30)==false);
+			
         
  
+   */
+}
 
-
-
-//menu de devolucao/emprestimo -------------------------------------------------------------------------
-
-void EmprestimoDevolucao(){
+   
+   
+   
+   
+//Main
+      
+ int main(){
 	
-	int input;
+	setlocale(LC_ALL, "Portuguese");
+    
+    int input;
+    
+    int contusuario=-1;
+    
+    Usuario usuario[5];
 	
-    do
-    {
+    do {
         printf("\n");
-        printf ("Menu Empréstimo/Devolução \n");
-        printf("1 - Emprestar item \n");
-        printf("2 - Devolver item \n");
-        printf("3 - Listar empréstimos \n");        
-		printf("4 - Voltar \n");        
+        printf ("Menu Principal \n");
+        printf("1 - Cadastro de usuários \n");
+        printf("2 - Cadastro de Itens da biblioteca \n");
+        printf("3 - Empréstimo/devolução \n");
+        printf("4 - Fim \n");        
         fflush(stdin);
         scanf("%d", &input);
         system("cls");
-        switch(input)
-        {
+        
+        
+        switch(input){
+        	
         case 1:
-            printf ("\n Menu 1 \n");
+            
+            menuUsuario(usuario,contusuario);
+            
             break;
         case 2:
-        	printf ("\n Menu 2 \n");
+        	for(int i=0;i<=contusuario;i++){
+        	
+        	printf("%lli   %s \n",usuario[i].cpf,usuario[i].nome);
+        	
+		}
             break;
         case 3:
-        	printf ("\n Menu 3\n");
-            break;   
-	   
+        	
+            break;        
         case 4:
-            menuPrincipal();
-            system("cls");
+            exit(EXIT_SUCCESS);
         default:
             printf ("\n Opção inválida!\n");
             fflush(stdin);
+            
         }
     }
     while(input != 0);
-    system("cls");    
-
+    system("cls");
+    
 }
-
 
 
 
