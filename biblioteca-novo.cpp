@@ -208,14 +208,14 @@ void CadastrarItem(ItemBiblioteca itens[], int& cont) {
     strcpy(itens[0].tipo_item,"L");
     strcpy(itens[0].titulo, "Menino Maluquinho");
     strcpy(itens[0].nome_autor, "Ziraldo");
-    strcpy(itens[0].nome_editora, "Sem");
+    strcpy(itens[0].nome_editora, "Ed. Melhoramentos");
     itens[0].ano_publicacao = 1980;
 
     itens[1].codigo = 123456;
     strcpy(itens[1].tipo_item, "L");
     strcpy(itens[1].titulo, "Diario de um Banana");
     strcpy(itens[1].nome_autor, "Jeff Kinney");
-    strcpy(itens[1].nome_editora, "Sem");
+    strcpy(itens[1].nome_editora, "New York Times");
     itens[1].ano_publicacao = 2007;
 
     itens[2].codigo = 234567;
@@ -302,7 +302,7 @@ void OrdenaTitulo(ItemBiblioteca* ordena,int cont){
 void ListaItens(ItemBiblioteca itens[], int cont) {
 
     printf("-------------------------------------------------------------------------------------------------\n");
-	printf("CODIGO T TITULO                             AUTOR                          EDITORA            ANO\n");
+	printf("CODIGO T TITULO                          AUTOR                          EDITORA            ANO\n");
 	printf("-------------------------------------------------------------------------------------------------\n");
 
 	for(int i = 0; i <= cont; i++) {
