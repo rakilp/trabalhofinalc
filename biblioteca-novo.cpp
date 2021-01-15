@@ -17,7 +17,7 @@ struct Usuario {
 
 struct ItemBiblioteca {
     int codigo;
-    char tipo_item[1];
+    char tipo_item[2];
     char titulo[MAX_LEN];
     char nome_autor[MAX_LEN];
     char nome_editora[MAX_LEN_EDITORA];
@@ -119,7 +119,7 @@ bool ValidarString(char string[], int menor, int maior){
 //-=-=-=-=-=-ESPACOS-=-=-=-=-=-
 void ImprimirEspaco(int n){
 
-	for(int i=0; i<n; i++)
+	for(int i=0; i<=n; i++)
 		printf(" ");
 }
 // -=-=-=-=-=-MAIUSCULO -=-=-=-=-=-
@@ -203,34 +203,36 @@ void ListarUsuarios(Usuario usuario[], int cont){
 
 //-=-=-=-=-=-CADASTRAR-=-=-=-=-=-
 void CadastrarItem(ItemBiblioteca itens[], int& cont) {
-	
-    printf("Entrou no cadastrar item\n");
 
     itens[0].codigo = 012345;
-    strcpy(itens[0].tipo_item, "L");
+    strcpy(itens[0].tipo_item,"L");
     strcpy(itens[0].titulo, "Menino Maluquinho");
     strcpy(itens[0].nome_autor, "Ziraldo");
+    strcpy(itens[0].nome_editora, "Sem");
     itens[0].ano_publicacao = 1980;
 
     itens[1].codigo = 123456;
     strcpy(itens[1].tipo_item, "L");
     strcpy(itens[1].titulo, "Diario de um Banana");
     strcpy(itens[1].nome_autor, "Jeff Kinney");
+    strcpy(itens[1].nome_editora, "Sem");
     itens[1].ano_publicacao = 2007;
 
     itens[2].codigo = 234567;
     strcpy(itens[2].tipo_item, "R");
     strcpy(itens[2].titulo, "Mundo Estranho");
+    strcpy(itens[2].nome_autor, "  ");
     strcpy(itens[2].nome_editora, "Abril");
     itens[2].ano_publicacao = 2013;
 
     itens[3].codigo = 345678;
     strcpy(itens[3].tipo_item, "R");
     strcpy(itens[3].titulo, "Epoca");
+    strcpy(itens[3].nome_autor, "  ");
     strcpy(itens[3].nome_editora, "Globo");
     itens[3].ano_publicacao = 2021;
-
-    printf("Saiu do cadastrar item\n");
+	
+   cont=3;
 }
 
 //-=-=-=-=-=-VALIDACAO-=-=-=-=-=-
@@ -243,7 +245,7 @@ bool ValidaCodigo(int codigo) {
 }
 
 //-=-=-=-=-=-EXCLUIR-=-=-=-=-=-
-void ExcluirCodigo(ItemBiblioteca itens[], int codigo, int cont) {
+void ExcluirCodigo(ItemBiblioteca itens[], int codigo, int& cont) {
 
     for (int i = 0; i <= cont; i++)
         if(itens[i].codigo == codigo) {
@@ -259,30 +261,73 @@ void ExcluirCodigo(ItemBiblioteca itens[], int codigo, int cont) {
 //-=-=-=-=-=-BUSCAR-=-=-=-=-=-
 bool BuscaCodigo (ItemBiblioteca itens[], int codigo, int cont) {
 	
-    bool result = false;
+    
 	
-    for(int i = 0; i <= cont; i++)
+    for(int i = 0; i <= cont; i++){
+	
         if(codigo == itens[i].codigo) {
             return true;
         }  
-
-    return result;	
 }
+    return false;	
+}
+
+//-=-=-=-=-=-ORDENACAO-=-=-=-=-=-
+void OrdenaCodigo(ItemBiblioteca* ordena,int cont) {
+   struct ItemBiblioteca aux;
+   
+   for (int j = cont-1; j >= 0; j--)
+        for (int i = 0; i <= j; i++)
+            if (ordena[i].codigo > ordena[i+1].codigo){                            
+                aux = ordena[i];
+                ordena[i] = ordena[i+1];
+                ordena[i+1] = aux;             
+            }
+}
+
+void OrdenaTitulo(ItemBiblioteca* ordena,int cont){
+   struct ItemBiblioteca aux;
+   
+   for (int j = cont-1; j >= 0; j--)
+        for (int i=0; i<=j; i++)
+            if (strcoll(ordena[i].titulo,ordena[i+1].titulo)> 0){                            
+                aux = ordena[i];
+                ordena[i] = ordena[i+1];
+                ordena[i+1] = aux;             
+            }
+}
+
 
 //-=-=-=-=-=-LISTAR-=-=-=-=-=- /*APOS EMPRESTIMO*/
 void ListaItens(ItemBiblioteca itens[], int cont) {
-    printf("--------------------------------------------------\n");
-	printf("CODIGO T TITULO     AUTOR      EDITORA         ANO\n");
-	printf("--------------------------------------------------\n");
+
+    printf("-------------------------------------------------------------------------------------------------\n");
+	printf("CODIGO T TITULO                             AUTOR                          EDITORA            ANO\n");
+	printf("-------------------------------------------------------------------------------------------------\n");
 
 	for(int i = 0; i <= cont; i++) {
-		printf("%d", itens[i].codigo);
-        printf("%c", itens[i].tipo_item);
-		printf("%s", itens[i].titulo);
-        printf("%s", itens[i].nome_autor);
-        printf("%s", itens[i].nome_editora);
-        printf("%d", itens[i].ano_publicacao);
-		printf("\n");	
+		printf("%06d", itens[i].codigo);
+		
+		ImprimirEspaco(0);
+		
+        printf("%s", itens[i].tipo_item);
+        
+        ImprimirEspaco(0);
+        
+		printf("%s",itens[i].titulo);
+		
+	    ImprimirEspaco(31-strlen(itens[i].titulo));
+        
+        printf("%s",itens[i].nome_autor);
+        
+         ImprimirEspaco(31-strlen(itens[i].nome_autor));
+         
+          printf(" %s ", itens[i].nome_editora);
+          
+        ImprimirEspaco(16- strlen(itens[i].nome_editora));
+        
+        printf(" %d  \n", itens[i].ano_publicacao);
+         
 	}
 	
     fflush(stdin);
@@ -355,6 +400,9 @@ void MenuItem(ItemBiblioteca itens[], int& cont) {
     int input = 0;
 
     do {
+    	
+    	//printf("%d", cont);
+    	
         printf("\n");
         printf ("Menu de Cadastro de Itens \n");
         printf("1 - Cadastrar novo item \n");
@@ -371,11 +419,13 @@ void MenuItem(ItemBiblioteca itens[], int& cont) {
                 CadastrarItem(itens, cont);
                 break;
             case 2:
-                int codigo;
+            	  int codigo;
+                
                 printf("Codigo: ");
         	    scanf("%d", &codigo);
         	
                 if(BuscaCodigo(itens, codigo, cont)) {
+                	
                     ExcluirCodigo(itens, codigo, cont);
                     printf("Exclusao realizada com sucesso!");
                     fflush(stdin);
@@ -388,10 +438,12 @@ void MenuItem(ItemBiblioteca itens[], int& cont) {
                 }
                 break;
             case 3:
-                printf("Print 3");
+            	OrdenaCodigo(itens,cont);
+                ListaItens(itens,cont);
                 break;   
             case 4:
-                printf("Menu 4");
+            	OrdenaTitulo(itens,cont);
+                ListaItens(itens,cont);
                 break;      
             case 5:
                 system("cls");
@@ -417,8 +469,7 @@ void MenuItem(ItemBiblioteca itens[], int& cont) {
     int cont_usuario = -1;
     int cont_itens = -1;
     
-    Usuario usuario[50];
-
+    Usuario usuario[10];    
     ItemBiblioteca itens[10];
 	
     do {
@@ -437,7 +488,7 @@ void MenuItem(ItemBiblioteca itens[], int& cont) {
                 MenuUsuario(usuario,cont_usuario);
                 break;
             case 2:
-                CadastrarItem(itens, cont_itens);
+            	MenuItem(itens, cont_itens);                
                 break;
             case 3:
                 printf("Menu 3\n");
