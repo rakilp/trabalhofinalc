@@ -13,12 +13,29 @@
     char nome[30];
 };
 
+struct Iten {      
+   int codigo;
+   char tipo[1];
+   char autor[30];
+   char editora[15];
+   int  ano;
+};
 
-//usuario
 
-void menuUsuario(Usuario usuario[], int& cont);
-void CadastarUsuario(Usuario usuario[], int& cont);
+
+
+//MENU
+void MenuUsuario(Usuario usuario[], int& cont);
+void MenuIten(Iten iten[], int& cont);
+
+//CADASTRAR
+void CadastrarUsuario(Usuario usuario[], int& cont);
+void  CadastrarIten(Iten iten[], int& cont);
+
+//LISTAR
 void ListarUsuarios(Usuario usuario[],int cont);
+
+//EXCLUIR
 void ExcluirCPF(Usuario* excluir,int& cont, long long int cpf);
 
 
@@ -90,6 +107,7 @@ for(int i=0;i<=cont;i++){
 return result;
 	
 }
+
 
 
 //ordenação
@@ -181,9 +199,9 @@ void ListarUsuarios(Usuario usuario[],int cont){
 
 
   
-//Menu de usuários -------------------------------------------------------------------------
+//Menu  -------------------------------------------------------------------------
 
-void menuUsuario(Usuario usuario[], int& cont){
+void MenuUsuario(Usuario usuario[], int& cont){
 	int input=0;
 	long long int cpf;
 	 do{
@@ -201,10 +219,11 @@ void menuUsuario(Usuario usuario[], int& cont){
         {
         case 1:
         	
-        	CadastarUsuario(usuario,cont);
+        	CadastrarUsuario(usuario,cont);
         
             break;
         case 2:
+        	
         	printf("CPF: ");
         	scanf("%lli",&cpf);
         	
@@ -220,8 +239,6 @@ void menuUsuario(Usuario usuario[], int& cont){
 				getchar();
 			}
         	
-        	
-        
             break;
         case 3:
         	
@@ -248,12 +265,55 @@ void menuUsuario(Usuario usuario[], int& cont){
     system("cls");
 }
 
-
-
-//Cadastro de usuários ------------------------------------------------------------------------------------------
-
-void CadastarUsuario(Usuario usuario[], int& cont){
+void MenuIten(Iten iten[], int& cont){
 	
+	int input;
+
+    do
+    {
+        printf("\n");
+        printf ("Menu de Cadastro de Itens \n");
+        printf("1 - Cadastrar novo item \n");
+        printf("2 - Excluir item \n");
+        printf("3 - Listar itens (ordenado por código) \n");
+        printf("4 - Listar itens (ordenado por titulo) \n");  
+		printf("5 - Voltar \n");        
+        fflush(stdin);
+        scanf("%d", &input);
+        system("cls");
+        switch(input)
+        {
+        case 1:
+            CadastrarIten(iten,cont);
+            break;
+        case 2:
+        	
+            break;
+        case 3:
+        	
+            break;   
+	    case 4:
+            
+			break;      
+        case 5:
+            input=0;
+            system("cls");
+        default:
+            printf ("\n Opcao invalida!\n");
+            fflush(stdin);
+            
+        }
+    }
+    while(input != 0);
+    system("cls");
+	
+}
+
+
+//Cadastro ------------------------------------------------------------------------------------------
+
+void CadastrarUsuario(Usuario usuario[], int& cont){
+/*	
 usuario[0].cpf=10907926894;
 strcpy(usuario[0].nome,"ZAIAS BISPO DOS SANTOS");
 
@@ -270,11 +330,11 @@ usuario[4].cpf=27672903829;
 strcpy(usuario[4].nome,"ALINE NUNES DE OLIVEIRA MACHAD");
 
 cont=4;
+*/	
 	
 	
 	
-	
-/*
+
    int input=0;
     long long int cpf;
 	char nome[30];
@@ -293,7 +353,7 @@ cont=4;
          if(BuscaCpf(usuario,cpf,cont)){
     	
        	printf("Erro no cadastro. CPF ja cadastrado!");
-       	menuUsuario(usuario,cont);
+       	MenuUsuario(usuario,cont);
     	
      	}else{
 		
@@ -305,7 +365,7 @@ cont=4;
 		 }else{
 		 	
 		 	printf("Erro no cadastro!");
-		 	menuUsuario(usuario,cont);
+		 	MenuUsuario(usuario,cont);
 		 }
 		 
 		 
@@ -338,9 +398,11 @@ cont=4;
 			
         
  
-   */
+   
 }
 
+void CadastrarIten(Iten iten[],int& cont){
+}
    
    
    
@@ -353,9 +415,10 @@ cont=4;
     
     int input;
     
-    int contusuario=-1;
+    int cont_usuario=-1,cont_iten=-1;
     
     Usuario usuario[5];
+    Iten iten[5];
 	
     do {
         printf("\n");
@@ -373,15 +436,11 @@ cont=4;
         	
         case 1:
             
-            menuUsuario(usuario,contusuario);
+            MenuUsuario(usuario,cont_usuario);
             
             break;
         case 2:
-        	for(int i=0;i<=contusuario;i++){
-        	
-        	printf("%lli   %s \n",usuario[i].cpf,usuario[i].nome);
-        	
-		}
+        	MenuIten(iten,cont_iten);
             break;
         case 3:
         	
