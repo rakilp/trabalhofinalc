@@ -41,6 +41,14 @@ void ExcluirCPF(Usuario* excluir, int& cont, long long int cpf);
 // Maiuscula
 void StringMaiuscula(char* string);
 
+
+//VALIDAR
+bool ValidaCpf(long long int cpf);
+bool ValidarString(char string[], int menor, int maior);
+
+//BUSCA
+bool BuscaCpf(Usuario usuario[],long long int cpf,int cont);
+
 // USUARIO
 // -=-=-=-=-=-Cadastro-=-=-=-=-=-
 void CadastrarUsuario(Usuario usuario[], int& cont) {
@@ -55,7 +63,7 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
     fflush(stdin);
         
     if (ValidaCpf(cpf)) {
-        if (BuscaCpf(usuario, cpf, cont)) {
+        if (BuscaCpf(usuario,cpf,cont)) {
             printf("Erro no cadastro. CPF ja cadastrado!");
             getchar();
             MenuUsuario(usuario,cont);
@@ -114,8 +122,10 @@ void ImprimirEspaco(int n){
 	for(int i=0; i<n; i++)
 		printf(" ");
 }
-
-
+// -=-=-=-=-=-MAIUSCULO -=-=-=-=-=-
+void StringMaiuscula(char* string){
+	while ((*string = (char) toupper(*string))) string++;
+}
 // -=-=-=-=-=-BUSCA -=-=-=-=-=-
 bool BuscaCpf(Usuario usuario[], long long int cpf, int cont){
 	
@@ -281,7 +291,7 @@ void ListaItens(ItemBiblioteca itens[], int cont) {
 }
 
 //-=-=-=-=-=-MENU DE USUARIOS-=-=-=-=-=-
-void menuUsuario(Usuario usuario[], int& cont){
+void MenuUsuario(Usuario usuario[], int& cont){
 	int input = 0;
 	 
     do {
@@ -424,7 +434,7 @@ void MenuItem(ItemBiblioteca itens[], int& cont) {
         
         switch(input){
             case 1:
-                menuUsuario(usuario,cont_usuario);
+                MenuUsuario(usuario,cont_usuario);
                 break;
             case 2:
                 CadastrarItem(itens, cont_itens);
