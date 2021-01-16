@@ -302,7 +302,7 @@ void OrdenaTitulo(ItemBiblioteca* ordena,int cont){
 void ListaItens(ItemBiblioteca itens[], int cont) {
 
     printf("-------------------------------------------------------------------------------------------------\n");
-	printf("CODIGO T TITULO                          AUTOR                          EDITORA            ANO\n");
+	printf("CODIGO T TITULO                          AUTOR                            EDITORA            ANO\n");
 	printf("-------------------------------------------------------------------------------------------------\n");
 
 	for(int i = 0; i <= cont; i++) {
