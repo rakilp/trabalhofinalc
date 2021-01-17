@@ -92,7 +92,10 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
     usuario[3].cpf = 15589774769;
     strcpy(usuario[3].nome,"Severina Lopes Campos"); 
     
-    cont=3;
+    usuario[4].cpf = 15589774770;
+    strcpy(usuario[4].nome,"Marcos Wilson"); 
+    
+    cont=4;
 	    
    /* int input = 0;
     long long int cpf;
@@ -401,7 +404,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], int& cont) {
     emprestimo[0].ano_devolucao = 2022;
     
     emprestimo[1].codigo_emprestimo=000002;
-    emprestimo[1].cpf_emprestimo=15581574767;
+    emprestimo[1].cpf_emprestimo=15511274767;
     emprestimo[1].dia_emprestimo= 16;
     emprestimo[1].mes_emprestimo= 01;
     emprestimo[1].ano_emprestimo= 2021;   
@@ -419,7 +422,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], int& cont) {
     emprestimo[2].ano_devolucao = 2022;
   
    emprestimo[3].codigo_emprestimo=000004;
-    emprestimo[3].cpf_emprestimo=15581574769;
+    emprestimo[3].cpf_emprestimo=15589774769;
     emprestimo[3].dia_emprestimo= 16;
     emprestimo[3].mes_emprestimo= 01;
     emprestimo[3].ano_emprestimo= 2021;   
@@ -742,9 +745,7 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[], int& cont_emprest
 
 
 
-   
-   
-   
+ 
    
    
 //Main
