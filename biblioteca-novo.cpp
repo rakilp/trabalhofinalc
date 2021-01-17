@@ -547,7 +547,19 @@ int CalcularMulta (Emprestimo emprestimo, long long int cpf,int cont_emprestimo,
 	
 }
 
-
+void RecuperarNome(Usuario usuario, long long int cpf,int cont){
+	
+	for(int i=0,i<=cont,i++){
+		
+		if(cpf==usuario[i].cpf){
+			
+			return usuario[i].nome;
+			
+		}
+	}
+	
+	
+}
 
 //-=-=-=-=-=-MENU DE USUARIOS-=-=-=-=-=-
 void MenuUsuario(Usuario usuario[], Emprestimo emprestimo[], int& cont_usuario, int cont_emprestimo){
@@ -744,8 +756,6 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[], int& cont_emprest
 }
 
 
-
- 
    
    
 //Main
