@@ -37,16 +37,18 @@ struct Emprestimo {
 };
 
 // MENU
-void MenuUsuario(Usuario usuario[], int& cont);
-void MenuIten(ItemBiblioteca itens[], int& cont);
+void MenuUsuario(Usuario usuario[], Emprestimo emprestimo[],ItemBiblioteca itens[], int& cont_usuario, int cont_emprestimo, int cont_iten);
+void MenuItem(ItemBiblioteca itens[], Emprestimo emprestimo[], int& cont_itens, int cont_emprestimo);
+void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca iten[], int& cont_emprestimo,int cont_usuario,int cont_iten);
 
 // CADASTRAR
 void CadastrarUsuario(Usuario usuario[], int& cont);
 void  CadastrarItem(ItemBiblioteca itens[], int& cont);
 
 // LISTAR
-void ListarUsuarios(Usuario usuario[],int cont);
-void ListaItensEmprestimo(Emprestimo emprestimo[], int cont_emprestimo,long long int cpf);
+void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], ItemBiblioteca iten[], int cont_usuario, int cont_emprestimo,int cont_iten);
+void ListaItensEmprestimo(Emprestimo emprestimo[], ItemBiblioteca iten[], int cont_emprestimo, int cont_iten, long long int cpf);
+void ListaEmprestimo(Emprestimo emprestimo[],Usuario usuario[],ItemBiblioteca iten[], int cont_emprestimo,int cont_usuario , int cont_iten);
 
 // EXCLUIR
 void ExcluirCPF(Usuario* excluir, int& cont, long long int cpf);
@@ -58,10 +60,21 @@ void StringMaiuscula(char* string);
 //VALIDAR
 bool ValidaCpf(long long int cpf);
 bool ValidarString(char string[], int menor, int maior);
+bool ValidaCodigo(int codigo);
 
 //BUSCA
 bool BuscaCpf(Usuario usuario[],long long int cpf,int cont);
 bool BuscaCpfEmprestimo(Emprestimo emprestimo[], long long int cpf, int cont);
+bool BuscaCodigo (ItemBiblioteca itens[], int codigo, int cont);
+
+//Recuperar
+int  RecuperarNome(Usuario usuario[], long long int cpf,int cont);
+int RecuperarTitulo(ItemBiblioteca iten[],int codigo,int cont);
+int RecuperarData(Emprestimo emprestimo[],long long int cpf,int cont);
+
+
+
+
 
 // -=-=-=-=-=-DATA-=-=-=-=-=-
 void data_hora_atual(int &dia, int &mes, int &ano, int &hora, int &min, int &seg) {
@@ -78,28 +91,30 @@ void data_hora_atual(int &dia, int &mes, int &ano, int &hora, int &min, int &seg
 // USUARIO
 // -=-=-=-=-=-Cadastro-=-=-=-=-=-
 void CadastrarUsuario(Usuario usuario[], int& cont) {
-	    
+/*  	    
 	    
 	usuario[0].cpf = 15581574766;
     strcpy(usuario[0].nome,"Raquel Lopes Campos");   
 	 
-	usuario[1].cpf = 15511274767;
+	usuario[1].cpf = 15581574767;
     strcpy(usuario[1].nome,"Douglas Lopes Campos");    
 	 
-	usuario[2].cpf = 15333574768;
+	usuario[2].cpf = 15581574768;
     strcpy(usuario[2].nome,"Diego Lopes Campos");   
     
-    usuario[3].cpf = 15589774769;
+    usuario[3].cpf = 15581574769;
     strcpy(usuario[3].nome,"Severina Lopes Campos"); 
     
-    usuario[4].cpf = 15589774770;
+    usuario[4].cpf = 15581574770;
     strcpy(usuario[4].nome,"Marcos Wilson"); 
     
     cont=4;
 	    
-   /* int input = 0;
+   	 */ 
+  		 
+   	 
     long long int cpf;
-	char nome[30];
+	char nome[MAX_LEN];
 
     // -=-=-=-=-=-CPF-=-=-=-=-=-   	   
     printf("CPF: ");
@@ -110,7 +125,8 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
         if (BuscaCpf(usuario,cpf,cont)) {
             printf("Erro no cadastro. CPF ja cadastrado!");
             getchar();
-            MenuUsuario(usuario,cont);
+             system("cls");
+            CadastrarUsuario(usuario,cont);
         } 
         else {
             cont++;
@@ -118,8 +134,11 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
         }
     }
     else {
-        printf("Erro no cadastro!");
-        MenuUsuario(usuario,cont);
+        printf("Erro no cadastro! \n");
+        getchar();
+        system("cls");
+        CadastrarUsuario(usuario,cont);
+        	
     }
     	
 	// -=-=-=-=-=-NOME-=-=-=-=-=-
@@ -136,13 +155,17 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
             system("cls");
         	
 		} else {
-			printf("Erro");
+			printf("Erro no cadastro!");			
 			getchar();
+			system("cls");
 			fflush(stdin);
+			
 		}
 	} while(!ValidarString(nome, MIN_LEN_STRING, MAX_LEN));
 	
-	*/
+	
+	
+	
 }
 
 //-=-=-=-=-=-VALIDACAO-=-=-=-=-=-
@@ -161,6 +184,7 @@ bool ValidarString(char string[], int menor, int maior){
     else
         return false;
 }
+
 
 //-=-=-=-=-=-ESPACOS-=-=-=-=-=-
 void ImprimirEspaco(int n){
@@ -228,7 +252,7 @@ void ExcluirCPF(Usuario* excluir, int& cont, long long int cpf){
 }
 
 // -=-=-=-=-=-LISTAR-=-=-=-=-=- /*ADICIONAR EMPRESTIMO*/
-void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], int cont_usuario, int cont_emprestimo){
+void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], ItemBiblioteca iten[], int cont_usuario, int cont_emprestimo,int cont_iten){
 	
 	printf("--------------------------------------------------\n");
 	printf("CPF          Nome\n");
@@ -240,7 +264,7 @@ void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], int cont_usuario
 		printf("%s", usuario[i].nome);
 		printf("\n");	
 		
-		ListaItensEmprestimo(emprestimo, cont_emprestimo,usuario[i].cpf);
+		ListaItensEmprestimo(emprestimo, iten, cont_emprestimo, cont_iten,usuario[i].cpf);
 		
 		
 		
@@ -256,7 +280,8 @@ void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], int cont_usuario
 //-=-=-=-=-=-CADASTRAR-=-=-=-=-=-
 void CadastrarItem(ItemBiblioteca itens[], int& cont) {
 
-    itens[0].codigo = 000001;
+ /*
+   itens[0].codigo = 000001;
     strcpy(itens[0].tipo_item,"L");
     strcpy(itens[0].titulo, "Menino Maluquinho");
     strcpy(itens[0].nome_autor, "Ziraldo");
@@ -285,6 +310,111 @@ void CadastrarItem(ItemBiblioteca itens[], int& cont) {
     itens[3].ano_publicacao = 2021;
 	
    cont=3;
+   
+    */
+  
+   int codigo;
+   char titulo[MAX_LEN];
+   char tipo[2],autor[MAX_LEN];
+   
+   
+   // -=-=-=-=-=-codigo-=-=-=-=-=-   	   
+    printf("Codigo: ");
+    scanf("%d", &codigo);  		     
+    fflush(stdin);
+     
+	 
+	
+    if (ValidaCodigo(codigo)) {
+        if (BuscaCodigo(itens,codigo,cont)) {
+            printf("Erro no cadastro. Codigo já cadastrado!");
+            getchar();
+             system("cls");
+            CadastrarItem(itens,cont);
+        } 
+        else {
+            cont++;
+            itens[cont].codigo = codigo;  
+        }
+    }
+    else {
+        printf("Erro no cadastro! \n");
+        getchar();
+        system("cls");
+       CadastrarItem(itens,cont);
+        	
+    }
+    
+    // -=-=-=-=-=-Tipo-=-=-=-=-=-
+	do {
+		
+	 	printf("Tipo : ");
+        gets(tipo);
+        fflush(stdin);
+        StringMaiuscula(tipo);
+        
+        
+        if(stricmp(tipo,"R") == 0 || (stricmp(tipo,"L"))==0) {
+        	
+        	strcpy(itens[cont].tipo_item, tipo);
+        	
+		} else {
+			printf("Erro no cadastro!");	
+			fflush(stdin);		
+			getchar();			 
+			system("cls");
+			
+			
+		}
+        
+	} while(stricmp(tipo,"R") == !0|| (stricmp(tipo,"L"))==!0);
+    
+    
+    // -=-=-=-=-=-TITULO-=-=-=-=-=-
+	do {
+	 	printf("Titulo : ");
+        gets(titulo);
+        fflush(stdin);
+        StringMaiuscula(titulo);
+        
+        if(ValidarString(titulo, MIN_LEN_STRING, MAX_LEN)) {
+        	strcpy(itens[cont].titulo, titulo);
+           
+		} else {
+			printf("Erro no cadastro!");			
+			getchar();
+			system("cls");
+			fflush(stdin);
+			
+		}
+	} while(!strcpy(itens[cont].tipo_item, tipo));
+  
+  
+   // -=-=-=-=-=-AUTOR-=-=-=-=-=-
+	do {
+	 	printf("Autor : ");
+        gets(autor);
+        fflush(stdin);
+        StringMaiuscula(autor);
+        
+        if(ValidarString(autor, MIN_LEN_STRING, MAX_LEN)) {
+        	strcpy(itens[cont].nome_autor, autor);
+            printf("Cadastro realizado com sucesso!");	
+            getchar();
+            system("cls");
+        	
+		} else {
+			printf("Erro no cadastro!");			
+			getchar();
+			system("cls");
+			fflush(stdin);
+			
+		}
+	} while(!strcpy(itens[cont].nome_autor, autor));
+  
+  
+  
+  
 }
 
 //-=-=-=-=-=-VALIDACAO-=-=-=-=-=-
@@ -399,36 +529,36 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], int& cont) {
     emprestimo[0].dia_emprestimo= 16;
     emprestimo[0].mes_emprestimo= 01;
     emprestimo[0].ano_emprestimo= 2021;   
-    emprestimo[0].dia_devolucao = 53;
-    emprestimo[0].mes_devolucao = 02;
-    emprestimo[0].ano_devolucao = 2022;
+    emprestimo[0].dia_devolucao = 14;
+    emprestimo[0].mes_devolucao = 01;
+    emprestimo[0].ano_devolucao = 2021;
     
     emprestimo[1].codigo_emprestimo=000002;
-    emprestimo[1].cpf_emprestimo=15511274767;
+    emprestimo[1].cpf_emprestimo=15581574767;
     emprestimo[1].dia_emprestimo= 16;
     emprestimo[1].mes_emprestimo= 01;
     emprestimo[1].ano_emprestimo= 2021;   
-    emprestimo[1].dia_devolucao = 53;
-    emprestimo[1].mes_devolucao = 02;
-    emprestimo[1].ano_devolucao = 2022;
+    emprestimo[1].dia_devolucao = 15;
+    emprestimo[1].mes_devolucao = 01;
+    emprestimo[1].ano_devolucao = 2021;
   
     emprestimo[2].codigo_emprestimo=000003;
     emprestimo[2].cpf_emprestimo=15581574768;
     emprestimo[2].dia_emprestimo= 16;
     emprestimo[2].mes_emprestimo= 01;
     emprestimo[2].ano_emprestimo= 2021;   
-    emprestimo[2].dia_devolucao = 53;
-    emprestimo[2].mes_devolucao = 02;
-    emprestimo[2].ano_devolucao = 2022;
+    emprestimo[2].dia_devolucao = 16;
+    emprestimo[2].mes_devolucao = 01;
+    emprestimo[2].ano_devolucao = 2021;
   
    emprestimo[3].codigo_emprestimo=000004;
-    emprestimo[3].cpf_emprestimo=15589774769;
+    emprestimo[3].cpf_emprestimo=15581574769;
     emprestimo[3].dia_emprestimo= 16;
     emprestimo[3].mes_emprestimo= 01;
     emprestimo[3].ano_emprestimo= 2021;   
-    emprestimo[3].dia_devolucao = 53;
-    emprestimo[3].mes_devolucao = 02;
-    emprestimo[3].ano_devolucao = 2022;
+    emprestimo[3].dia_devolucao = 17;
+    emprestimo[3].mes_devolucao = 01;
+    emprestimo[3].ano_devolucao = 2021;
   
   
  cont=3;
@@ -475,7 +605,7 @@ bool BuscaCodigoEmprestimo(Emprestimo emprestimo[], int codigo, int cont){
 }
 
 // -=-=-=-=-=-LISTAR-=-=-=-=-=- 
-void ListaItensEmprestimo(Emprestimo emprestimo[], int cont_emprestimo,long long int cpf) {
+void ListaItensEmprestimo(Emprestimo emprestimo[], ItemBiblioteca iten[], int cont_emprestimo, int cont_iten, long long int cpf) {
 
 	for(int i = 0; i <= cont_emprestimo; i++) {
 		
@@ -491,39 +621,40 @@ void ListaItensEmprestimo(Emprestimo emprestimo[], int cont_emprestimo,long long
 		  printf("00/00/0000");
 		  printf("\n");
 		  ImprimirEspaco(12);
-		  printf("Tipo:");
+		  printf("Tipo: ");
+		  printf("%s",iten[RecuperarTitulo(iten,emprestimo[i].codigo_emprestimo,cont_iten)].tipo_item);	
 		  printf("\n");
 		  ImprimirEspaco(12);
-		  printf("Titulo:");
+		  printf("Titulo: ");
+		  printf("%s",iten[RecuperarTitulo(iten,emprestimo[i].codigo_emprestimo,cont_iten)].titulo);
 		  ImprimirEspaco(0);
 	      printf("\n");
        
      }
 	}
-	
-	
-   
 }
 
-void ListaEmprestimo(Emprestimo emprestimo[], int cont_emprestimo) {
+void ListaEmprestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca iten[], int cont_emprestimo,int cont_usuario , int cont_iten){
 
 
   printf("-----------------------------------------------------------------------------------------------------\n");
-  printf("CPF         Nome                           Codigo Titulo                         Emprestimo Devolução\n");
+  printf("CPF         Nome                           Codigo Titulo                       Emprestimo Devolução\n");
   printf("-----------------------------------------------------------------------------------------------------\n");
 
 	for(int i = 0; i <= cont_emprestimo; i++) {
-		
-		
-		  
+
 		  printf("%lli",emprestimo[i].cpf_emprestimo);
 		  ImprimirEspaco(0);
-		  printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-		  ImprimirEspaco(0);
+		  		  
+		  printf("%s",usuario[RecuperarNome(usuario,emprestimo[i].cpf_emprestimo,cont_usuario)].nome);		  
+		  ImprimirEspaco(31-strlen(usuario[RecuperarNome(usuario,emprestimo[i].cpf_emprestimo,cont_usuario)].nome));
+		  
 		  printf("%06d",emprestimo[i].codigo_emprestimo);
 		  ImprimirEspaco(0);
-		  printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-		  ImprimirEspaco(0);
+		  
+		  printf("%s",iten[RecuperarTitulo(iten,emprestimo[i].codigo_emprestimo,cont_iten)].titulo);		  
+		  ImprimirEspaco(31-strlen(iten[RecuperarTitulo(iten,emprestimo[i].codigo_emprestimo,cont_iten)].titulo));
+		  
 		  printf("%02d",emprestimo[i].dia_emprestimo);
 		  printf("/");
 		  printf("%02d",emprestimo[i].mes_emprestimo);
@@ -539,30 +670,81 @@ void ListaEmprestimo(Emprestimo emprestimo[], int cont_emprestimo) {
 	
 	
 }
+
+fflush(stdin);
+	getchar();
+    system("cls");
 }
 // -=-=-=-=-=-Calcular multa -=-=-=-=-=-
-int CalcularMulta (Emprestimo emprestimo, long long int cpf,int cont_emprestimo,int dia,int mes,int ano){
+int CalcularMulta (Emprestimo emprestimo[], long long int cpf,int cont_emprestimo,int dia,int mes,int ano){
+ 
+ int result,i,devolucao,dataAtual;
 
+	i=RecuperarData(emprestimo,cpf,cont_emprestimo);
 	
+	devolucao = emprestimo[i].dia_devolucao + (emprestimo[i].mes_devolucao*31 )+ (emprestimo[i].ano_devolucao*365);
 	
+	dataAtual=dia+(mes*31)+(ano*365);
+	
+		if(dataAtual>=devolucao){
+			
+			result =  dataAtual - devolucao;
+		
+			
+		}else{
+			
+			result =  0;
+			
+		}
+		
+		return result;
+		
 }
 
-void RecuperarNome(Usuario usuario, long long int cpf,int cont){
+
+int RecuperarNome(Usuario usuario[], long long int cpf,int cont){
+	int result=0;
 	
-	for(int i=0,i<=cont,i++){
+	for(int i=0;i<=cont;i++){
 		
-		if(cpf==usuario[i].cpf){
+		if(usuario[i].cpf == cpf){
 			
-			return usuario[i].nome;
+	      result =  i;
+	      
+		}
+	}
+	
+	return result ;
+}
+
+int RecuperarTitulo(ItemBiblioteca iten[],int codigo,int cont){
+	
+	for(int i=0;i<=cont;i++){
+		
+		if(iten[i].codigo == codigo){
 			
+	      return i;
+	      
 		}
 	}
 	
 	
 }
 
+int RecuperarData(Emprestimo emprestimo[],long long int cpf,int cont){
+	
+		for(int i=0;i<=cont;i++){
+			
+		if(emprestimo[i].cpf_emprestimo == cpf)	{
+			
+			return i;
+		}
+		
+		}
+}
+
 //-=-=-=-=-=-MENU DE USUARIOS-=-=-=-=-=-
-void MenuUsuario(Usuario usuario[], Emprestimo emprestimo[], int& cont_usuario, int cont_emprestimo){
+void MenuUsuario(Usuario usuario[], Emprestimo emprestimo[],ItemBiblioteca itens[], int& cont_usuario, int cont_emprestimo, int cont_iten){
 	int input = 0;
 	 
     do {
@@ -610,11 +792,11 @@ void MenuUsuario(Usuario usuario[], Emprestimo emprestimo[], int& cont_usuario, 
                 break;
             case 3:
                 OrdenaCPF(usuario, cont_usuario);
-                ListarUsuarios(usuario, emprestimo, cont_usuario,cont_emprestimo);
+                ListarUsuarios(usuario, emprestimo, itens, cont_usuario,cont_emprestimo,cont_iten);
                 break;   
             case 4:
                 OrdenaNome(usuario, cont_usuario);
-                ListarUsuarios(usuario, emprestimo, cont_usuario,cont_emprestimo);
+                ListarUsuarios(usuario, emprestimo,itens, cont_usuario,cont_emprestimo,cont_iten);
                 break;      
             case 5:
                 system("cls");
@@ -699,8 +881,8 @@ void MenuItem(ItemBiblioteca itens[], Emprestimo emprestimo[], int& cont_itens, 
 }
 
 //-=-=-=-=-=-MENU DE EMPRESTIMO-=-=-=-=-=-
-void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[], int& cont_emprestimo,int cont_usuario) {
-    int dia,mes,ano,hora,min,seg;
+void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca iten[], int& cont_emprestimo,int cont_usuario,int cont_iten) {
+    
     
     int input = 0;
 
@@ -721,15 +903,44 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[], int& cont_emprest
                 CadastrarEmprestimo(emprestimo,cont_emprestimo);
                 break;
             case 2:
+            	int dia,mes,ano;
+            	int prazo;
+            	float taxa;
             	long long int cpf;
-            	 printf("CPF: ");
-        	    scanf("%lli", &cpf);
+            	
+            	taxa=1.50;
+            	 
         	    
         	    if(BuscaCpf(usuario, cpf, cont_usuario)){
         	      if(BuscaCpfEmprestimo(emprestimo,cpf,cont_emprestimo)){
         	      	
-        	      	Devolucao(emprestimo,cpf,cont_emprestimo);
-        	      	printf("Devolucao realizada com sucesso no prazo!");
+        	    printf("CPF: ");
+        	    scanf("%lli", &cpf);
+        	    
+        	    printf("Dia: ");
+        	    scanf("%d", &dia);
+        	    
+        	    printf("Mês: ");
+        	    scanf("%d", &mes);
+        	    
+        	    printf("Ano: ");
+        	    scanf("%d", &ano);
+        	      	prazo = CalcularMulta(emprestimo,cpf,cont_emprestimo,dia,mes,ano);
+        	      	
+        	      	printf("Dias %d \n",prazo);
+        	      	
+        	      	if(prazo==0){
+        	      		Devolucao(emprestimo,cpf,cont_emprestimo);
+        	      		printf("Devolucao realizada com sucesso no prazo!");
+        	      		
+					  }else{
+					  	Devolucao(emprestimo,cpf,cont_emprestimo);
+					  	printf("Devolucao realizada com atraso de %d dias.",prazo);
+					  	printf("Multa de R$ %.2f", prazo*taxa);
+					  	
+					  }
+        	      	
+        	      	
 				  }else{
 				  	printf("Usuario nao tem emprestimo!");
 				  }	
@@ -737,10 +948,9 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[], int& cont_emprest
 					printf("Usuario não cadastrado!");
 				}
 				
-				
             	  break;                
             case 3:
-            	ListaEmprestimo(emprestimo,cont_emprestimo);           
+            	ListaEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);           
                 break;                 
             case 4:
                 system("cls");
@@ -774,9 +984,7 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[], int& cont_emprest
     ItemBiblioteca itens[10];
     Emprestimo emprestimo[10];
 	
-	
-	
-	
+
 	
     do {
         printf("\n");
@@ -791,13 +999,13 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[], int& cont_emprest
         
         switch(input){
             case 1:
-                MenuUsuario(usuario,emprestimo,cont_usuario,cont_emprestimo);
+                MenuUsuario(usuario,emprestimo,itens, cont_usuario,cont_emprestimo,cont_itens);
                 break;
             case 2:
             	MenuItem(itens,emprestimo, cont_itens,cont_emprestimo);                
                 break;
             case 3:
-                MenuEmpestimo(emprestimo,usuario,cont_emprestimo,cont_usuario);
+                MenuEmpestimo(emprestimo,usuario,itens,cont_emprestimo,cont_usuario,cont_itens);
                 break;        
             case 4:
                 exit(EXIT_SUCCESS);
