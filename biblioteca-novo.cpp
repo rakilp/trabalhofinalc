@@ -131,8 +131,7 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
             cont++;
             usuario[cont].cpf = cpf;  
         }
-    }
-    else {
+    }else {
         printf("Erro no cadastro! \n");
         getchar();
         system("cls");
@@ -148,19 +147,23 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
         StringMaiuscula(nome);
         
         if(ValidarString(nome, MIN_LEN_STRING, MAX_LEN)) {
+        	
         	strcpy(usuario[cont].nome, nome);
             printf("Cadastro realizado com sucesso!");	
+            fflush(stdin);
             getchar();
             system("cls");
+               
         	
 		} else {
 			printf("Erro no cadastro!");			
 			getchar();
-			system("cls");
 			fflush(stdin);
+			system("cls");
+			
 			
 		}
-	} while(!ValidarString(nome, MIN_LEN_STRING, MAX_LEN));
+	} while(!ValidarString(nome, MIN_LEN_STRING,MAX_LEN));
 	
 	
 	
@@ -483,7 +486,9 @@ do{
 		 
 }while(ValidaNumero(ano,999,10000)==false);	
   
-  
+  printf("Cadastro realizado com sucesso!");
+  getchar();
+  system("cls");
   
 }
 
@@ -698,11 +703,13 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
 					  
          	         emprestimo[cont_emprestimo].ano_devolucao = ano;
          	         
-         	         printf("Emprestimo concedido! \n");
-         	         printf("Nome : %s",usuario[RecuperarNome(usuario,cpf,cont_usuario)].nome);
-         	         printf("Titulo : %s",iten[RecuperarTitulo(iten,codigo,cont_iten)].titulo);
-         	         printf("Data de emprestimo: %02d/%02d/%d",dia,mes,ano);
-         	         printf("Data de devolução: %02d/%02d/%d",emprestimo[cont_emprestimo].dia_devolucao,emprestimo[cont_emprestimo].mes_devolucao,emprestimo[cont_emprestimo].ano_devolucao);
+         	         printf("\n\nEmprestimo concedido! \n");
+         	         printf("Nome : %s \n",usuario[RecuperarNome(usuario,cpf,cont_usuario)].nome);
+         	         printf("Titulo : %s \n",iten[RecuperarTitulo(iten,codigo,cont_iten)].titulo);
+         	         printf("Data de emprestimo: %02d/%02d/%d \n",dia,mes,ano);
+         	         printf("Data de devolução: %02d/%02d/%d \n",emprestimo[cont_emprestimo].dia_devolucao,emprestimo[cont_emprestimo].mes_devolucao,emprestimo[cont_emprestimo].ano_devolucao);
+					 getchar();
+					system("cls");	
 					 	
 					 }
          			
@@ -1021,6 +1028,8 @@ void MenuItem(ItemBiblioteca itens[], Emprestimo emprestimo[], int& cont_itens, 
                 
                 printf("Codigo: ");
         	    scanf("%d", &codigo);
+        	    fflush(stdin);
+                    getchar();
         	
                 if(BuscaCodigo(itens, codigo, cont_itens)) {
                 		if(BuscaCodigoEmprestimo(emprestimo,codigo,cont_emprestimo)){
@@ -1107,18 +1116,22 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
         	    
         	    printf("Ano: ");
         	    scanf("%d", &ano);
+        	    
         	      	prazo = CalcularMulta(emprestimo,cpf,cont_emprestimo,dia,mes,ano);
-        	      	
-        	      	printf("Dias %d \n",prazo);
         	      	
         	      	if(prazo==0){
         	      		Devolucao(emprestimo,cpf,cont_emprestimo);
-        	      		printf("Devolucao realizada com sucesso no prazo!");
+        	      		printf("\nDevolucao realizada com sucesso no prazo!");
         	      		
 					  }else{
 					  	Devolucao(emprestimo,cpf,cont_emprestimo);
-					  	printf("Devolucao realizada com atraso de %d dias.",prazo);
-					  	printf("Multa de R$ %.2f", prazo*taxa);
+					  	
+					  	printf("Nome : %s \n",usuario[RecuperarNome(usuario,cpf,cont_usuario)].nome);
+         	            printf("Titulo : %s \n",iten[RecuperarTitulo(iten,emprestimo[cont_emprestimo].codigo_emprestimo,cont_iten)].titulo);
+					  	printf("Data de devolução: %02d/%02d/%d \n",emprestimo[cont_emprestimo].dia_devolucao,emprestimo[cont_emprestimo].mes_devolucao,emprestimo[cont_emprestimo].ano_devolucao);
+					  	
+					  	printf("\n\nDevolucao realizada com atraso de %d dia(s).\n",prazo);
+					  	printf("Multa de R$ %.2f \n", prazo*taxa);
 					  	
 					  }
         	      	
