@@ -44,6 +44,7 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
 // CADASTRAR
 void CadastrarUsuario(Usuario usuario[], int& cont);
 void  CadastrarItem(ItemBiblioteca itens[], int& cont);
+void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBiblioteca iten[], int& cont_emprestimo, int cont_usuario, int cont_iten);
 
 // LISTAR
 void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], ItemBiblioteca iten[], int cont_usuario, int cont_emprestimo,int cont_iten);
@@ -60,13 +61,13 @@ void StringMaiuscula(char* string);
 //VALIDAR
 bool ValidaCpf(long long int cpf);
 bool ValidarString(char string[], int menor, int maior);
-bool ValidaCodigo(int codigo);
+bool ValidaNumero(int numero,int max , int min);
 
 //BUSCA
 bool BuscaCpf(Usuario usuario[],long long int cpf,int cont);
 bool BuscaCpfEmprestimo(Emprestimo emprestimo[], long long int cpf, int cont);
 bool BuscaCodigo (ItemBiblioteca itens[], int codigo, int cont);
-
+bool BuscaCodigoEmprestimo(Emprestimo emprestimo[], int codigo, int cont);
 //Recuperar
 int  RecuperarNome(Usuario usuario[], long long int cpf,int cont);
 int RecuperarTitulo(ItemBiblioteca iten[],int codigo,int cont);
@@ -77,15 +78,13 @@ int RecuperarData(Emprestimo emprestimo[],long long int cpf,int cont);
 
 
 // -=-=-=-=-=-DATA-=-=-=-=-=-
-void data_hora_atual(int &dia, int &mes, int &ano, int &hora, int &min, int &seg) {
+void data_hora_atual(int &dia, int &mes, int &ano) {
  time_t t = time(NULL);
  struct tm lt = *localtime(&t);
  ano = lt.tm_year + 1900;
  mes = lt.tm_mon + 1;
  dia = lt.tm_mday;
- hora = lt.tm_hour;
- min = lt.tm_min;
- seg = lt.tm_sec;
+
 }
 
 // USUARIO
@@ -313,19 +312,16 @@ void CadastrarItem(ItemBiblioteca itens[], int& cont) {
    
     */
   
-   int codigo;
-   char titulo[MAX_LEN];
-   char tipo[2],autor[MAX_LEN];
+   int codigo,ano;
+   char tipo[2],titulo[MAX_LEN],autor[MAX_LEN],editora[MAX_LEN_EDITORA];
    
    
-   // -=-=-=-=-=-codigo-=-=-=-=-=-   	   
+   // -=-=-=-=-=-CODIGO-=-=-=-=-=-   	   
     printf("Codigo: ");
     scanf("%d", &codigo);  		     
     fflush(stdin);
      
-	 
-	
-    if (ValidaCodigo(codigo)) {
+    if (ValidaNumero(codigo,-1,100000)) {
         if (BuscaCodigo(itens,codigo,cont)) {
             printf("Erro no cadastro. Codigo já cadastrado!");
             getchar();
@@ -345,82 +341,156 @@ void CadastrarItem(ItemBiblioteca itens[], int& cont) {
         	
     }
     
-    // -=-=-=-=-=-Tipo-=-=-=-=-=-
-	do {
+    
+    
+     // -=-=-=-=-=-TIPO-=-=-=-=-=-
+	
+	do{	
+	printf("Tipo: ");
+	scanf("%s",tipo);
+	fflush(stdin);	
+	StringMaiuscula(tipo);
+	
+	
+	if(stricmp(tipo,"R")==0 || stricmp(tipo,"L")==0){
 		
-	 	printf("Tipo : ");
-        gets(tipo);
-        fflush(stdin);
-        StringMaiuscula(tipo);
-        
-        
-        if(stricmp(tipo,"R") == 0 || (stricmp(tipo,"L"))==0) {
-        	
-        	strcpy(itens[cont].tipo_item, tipo);
-        	
-		} else {
-			printf("Erro no cadastro!");	
-			fflush(stdin);		
-			getchar();			 
-			system("cls");
-			
-			
-		}
-        
-	} while(stricmp(tipo,"R") == !0|| (stricmp(tipo,"L"))==!0);
+		
+	strcpy(itens[cont].tipo_item, tipo);	
+	
+	}else{
+	
+	printf("\nO Tipo não é  R para Resvistas ou  L para Livros!\n");
+	getchar();
+	system("cls"); 
+	}	
+	
+		 
+}while(stricmp (tipo,"R")!=0 && stricmp (tipo,"L")!=0);
+		 
+		 
+		 
+		 
+		  // -=-=-=-=-=-TITULO-=-=-=-=-=-
+		 
+    
+    do{
+	
+	printf("Titulo: ");
+	gets(titulo);
+	fflush(stdin);	
+	StringMaiuscula(titulo);
+	
+	if(ValidarString(titulo,MIN_LEN_STRING,MAX_LEN)){
+		
+	strcpy(itens[cont].titulo, titulo);
+		
+	}else{
+	
+	printf("\nTitulo é menor que 4 ou maior que 30 caracteres!\n");	
+	getchar();
+	system("cls");	
+	}	
+	
+		 
+}while(ValidarString(titulo,MIN_LEN_STRING,MAX_LEN)==false);	
     
     
-    // -=-=-=-=-=-TITULO-=-=-=-=-=-
-	do {
-	 	printf("Titulo : ");
-        gets(titulo);
-        fflush(stdin);
-        StringMaiuscula(titulo);
-        
-        if(ValidarString(titulo, MIN_LEN_STRING, MAX_LEN)) {
-        	strcpy(itens[cont].titulo, titulo);
-           
-		} else {
-			printf("Erro no cadastro!");			
-			getchar();
-			system("cls");
-			fflush(stdin);
-			
-		}
-	} while(!strcpy(itens[cont].tipo_item, tipo));
+    
+   
+  
+   
+
+
+
+  
+// -=-=-=-=-=-AUTOR-=-=-=-=-=-
+
+if(stricmp(tipo,"L")==0){
+
+do{
+	
+	printf("Autor: ");
+	gets(autor);
+	fflush(stdin);	
+	StringMaiuscula(autor);
+	
+	if(ValidarString(autor,MIN_LEN_STRING,MAX_LEN)){
+		
+	strcpy(itens[cont].nome_autor, autor);
+		
+	}else{
+	
+	printf("\nAutor é menor que 4 ou maior que 30 caracteres!\n");	
+	getchar();
+	system("cls");	
+	}	
+	
+		 
+}while(ValidarString(autor,MIN_LEN_STRING,MAX_LEN)==false);		 
+		 
+}else{
+	
+	strcpy(itens[cont].nome_autor, " ");
+	
+}
+
+// -=-=-=-=-=-EDITORA-=-=-=-=-=-
+
+do{
+	
+	printf("Editora: ");
+	gets(editora);
+	fflush(stdin);	
+	StringMaiuscula(editora);
+	
+	if(ValidarString(editora,MIN_LEN_STRING,MAX_LEN_EDITORA)){
+		
+	strcpy(itens[cont].nome_editora, editora);
+		
+	}else{
+	
+	printf("\nEditora é menor que 4 ou maior que 30 caracteres!\n");	
+	getchar();
+	system("cls");	
+	}	
+	
+		 
+}while(ValidarString(editora,MIN_LEN_STRING,MAX_LEN_EDITORA)==false);	
+
   
   
-   // -=-=-=-=-=-AUTOR-=-=-=-=-=-
-	do {
-	 	printf("Autor : ");
-        gets(autor);
-        fflush(stdin);
-        StringMaiuscula(autor);
-        
-        if(ValidarString(autor, MIN_LEN_STRING, MAX_LEN)) {
-        	strcpy(itens[cont].nome_autor, autor);
-            printf("Cadastro realizado com sucesso!");	
-            getchar();
-            system("cls");
-        	
-		} else {
-			printf("Erro no cadastro!");			
-			getchar();
-			system("cls");
-			fflush(stdin);
-			
-		}
-	} while(!strcpy(itens[cont].nome_autor, autor));
+  // -=-=-=-=-=-ANO-=-=-=-=-=-
   
+  
+  
+  do{
+	
+	printf("Ano: ");
+	scanf("%d",&ano);
+	fflush(stdin);	
+		
+	if(ValidaNumero(ano,999,10000)){
+		
+	itens[cont].ano_publicacao = ano;
+		
+	}else{
+	
+	printf("\nAno precisa ser possitivo de até 6 caracteres!\n");	
+	getchar();
+	system("cls");	
+	}	
+	
+		 
+}while(ValidaNumero(ano,999,10000)==false);	
   
   
   
 }
 
 //-=-=-=-=-=-VALIDACAO-=-=-=-=-=-
-bool ValidaCodigo(int codigo) {
+bool ValidaNumero(int numero,int max , int min) {
 	
-	if(codigo > 0 && codigo < 1000000)
+	if(numero >= 0 && numero < 1000000)
 		return true;
 	else
 		return false;
@@ -521,9 +591,9 @@ void ListaItens(ItemBiblioteca itens[], int cont) {
 
 // Emprestimo
 // -=-=-=-=-=-Cadastro-=-=-=-=-=- 
-void CadastrarEmprestimo(Emprestimo emprestimo[], int& cont) {
+void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBiblioteca iten[], int& cont_emprestimo, int cont_usuario, int cont_iten) {
 	   
-    
+   /* 
     emprestimo[0].codigo_emprestimo=000001;
     emprestimo[0].cpf_emprestimo=15581574766;
     emprestimo[0].dia_emprestimo= 16;
@@ -563,6 +633,117 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], int& cont) {
   
  cont=3;
 	   
+	*/
+	
+	
+	int codigo,dia,mes,ano;
+	long long int cpf;
+	
+	
+	// -=-=-=-=-=-CPF-=-=-=-=-=-   	   
+    printf("CPF: ");
+    scanf("%lli", &cpf);  		     
+    fflush(stdin);
+    
+    printf("Codigo: ");
+    scanf("%d", &codigo);  		     
+    fflush(stdin);
+    
+    // -=-=-=-=-=-CADASTRAR CPF-=-=-=-=-=-
+        
+    if (ValidaCpf(cpf)) {
+        if (BuscaCpf(usuario,cpf,cont_usuario)) {
+        	if(BuscaCpfEmprestimo(emprestimo,cpf,cont_emprestimo)){
+        		
+            printf("Erro no emprestimo. Usuario ja tem emprestimo!");
+            getchar();
+           system("cls");
+           
+           CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten); 
+            
+         }else{
+         	
+         	// -=-=-=-=-=-CADASTRAR CODIGO-=-=-=-=-=-
+         	
+         	
+         	if(ValidaNumero(codigo,-1,10000)){
+         		if(BuscaCodigo(iten,codigo,cont_iten)){
+         			if(BuscaCodigoEmprestimo(emprestimo,codigo,cont_iten)){
+         				
+         				
+         				
+					 }else{
+					 	
+					 	cont_emprestimo++;
+         	            emprestimo[cont_emprestimo].cpf_emprestimo = cpf;
+         	            emprestimo[cont_emprestimo].codigo_emprestimo = codigo;
+         	         
+         	          data_hora_atual(dia,mes,ano);
+         	          
+         	         emprestimo[cont_emprestimo].dia_emprestimo = dia;
+         	         emprestimo[cont_emprestimo].mes_emprestimo = mes;
+         	         emprestimo[cont_emprestimo].ano_emprestimo = ano;
+         	         
+         	         emprestimo[cont_emprestimo].dia_devolucao = dia + 7;
+         	         
+         	         if(dia>31){
+         	         	
+         	         	 emprestimo[cont_emprestimo].dia_devolucao = 31 - dia;
+         	         	emprestimo[cont_emprestimo].mes_devolucao = mes + 1;
+					  }else{
+					  	
+					  	emprestimo[cont_emprestimo].mes_devolucao = mes;
+					  	
+					  }
+					  
+         	         emprestimo[cont_emprestimo].ano_devolucao = ano;
+         	         
+         	         printf("Emprestimo concedido! \n");
+         	         printf("Nome : %s",usuario[RecuperarNome(usuario,cpf,cont_usuario)].nome);
+         	         printf("Titulo : %s",iten[RecuperarTitulo(iten,codigo,cont_iten)].titulo);
+         	         printf("Data de emprestimo: %02d/%02d/%d",dia,mes,ano);
+         	         printf("Data de devolução: %02d/%02d/%d",emprestimo[cont_emprestimo].dia_devolucao,emprestimo[cont_emprestimo].mes_devolucao,emprestimo[cont_emprestimo].ano_devolucao);
+					 	
+					 }
+         			
+				 }else{
+				 	
+				 	printf("Erro no emprestimo. Codigo não cadastrado!");
+					getchar();
+					system("cls");
+					CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+				 	
+				 }
+         		
+			 }else{
+			 	
+			 	printf("Erro no emprestimo. Codigo incorreto!");
+				getchar();
+				system("cls");
+				
+				CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+			 	
+			 	
+			 }
+         	
+		 }	
+         
+    }else{
+    	
+    	printf("Erro no emprestimo. Usuario não cadastrado!");
+        getchar();
+        system("cls");
+    	CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+	}    	
+}else{
+	
+	printf("Erro no emprestimo. CPF incorreto!");
+	getchar();
+    system("cls");
+		CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+}
+        
+	
 	
 }
 //-=-=-=-=-=-EXCLUIR-=-=-=-=-=-
@@ -594,11 +775,11 @@ bool BuscaCpfEmprestimo(Emprestimo emprestimo[], long long int cpf, int cont){
 
 bool BuscaCodigoEmprestimo(Emprestimo emprestimo[], int codigo, int cont){
 	
-    bool result = true;
+    bool result = false;
 	
     for(int i = 0; i <= cont; i++)
         if(codigo == emprestimo[i].codigo_emprestimo) {
-            return false;
+            return true;
         }  
 
     return result;	
@@ -638,7 +819,7 @@ void ListaEmprestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca i
 
 
   printf("-----------------------------------------------------------------------------------------------------\n");
-  printf("CPF         Nome                           Codigo Titulo                       Emprestimo Devolução\n");
+  printf("CPF         Nome                            Codigo Titulo                          Emprestimo Devolução\n");
   printf("-----------------------------------------------------------------------------------------------------\n");
 
 	for(int i = 0; i <= cont_emprestimo; i++) {
@@ -900,7 +1081,7 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
         
         switch(input) {
             case 1:
-                CadastrarEmprestimo(emprestimo,cont_emprestimo);
+                CadastrarEmprestimo(emprestimo, usuario, iten, cont_emprestimo, cont_usuario, cont_iten);
                 break;
             case 2:
             	int dia,mes,ano;
@@ -910,12 +1091,13 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
             	
             	taxa=1.50;
             	 
+            	  printf("CPF: ");
+        	    scanf("%lli", &cpf);
         	    
         	    if(BuscaCpf(usuario, cpf, cont_usuario)){
         	      if(BuscaCpfEmprestimo(emprestimo,cpf,cont_emprestimo)){
         	      	
-        	    printf("CPF: ");
-        	    scanf("%lli", &cpf);
+        	   
         	    
         	    printf("Dia: ");
         	    scanf("%d", &dia);
