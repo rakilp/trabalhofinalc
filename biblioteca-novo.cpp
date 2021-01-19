@@ -90,32 +90,15 @@ void data_hora_atual(int &dia, int &mes, int &ano) {
 // USUARIO
 // -=-=-=-=-=-Cadastro-=-=-=-=-=-
 void CadastrarUsuario(Usuario usuario[], int& cont) {
-/*  	    
-	    
-	usuario[0].cpf = 15581574766;
-    strcpy(usuario[0].nome,"Raquel Lopes Campos");   
-	 
-	usuario[1].cpf = 15581574767;
-    strcpy(usuario[1].nome,"Douglas Lopes Campos");    
-	 
-	usuario[2].cpf = 15581574768;
-    strcpy(usuario[2].nome,"Diego Lopes Campos");   
-    
-    usuario[3].cpf = 15581574769;
-    strcpy(usuario[3].nome,"Severina Lopes Campos"); 
-    
-    usuario[4].cpf = 15581574770;
-    strcpy(usuario[4].nome,"Marcos Wilson"); 
-    
-    cont=4;
-	    
-   	 */ 
-  		 
-   	 
+
     long long int cpf;
 	char nome[MAX_LEN];
+	int input=0;
 
     // -=-=-=-=-=-CPF-=-=-=-=-=-   	   
+    
+    
+    
     printf("CPF: ");
     scanf("%lli", &cpf);  		     
     fflush(stdin);
@@ -125,7 +108,7 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
             printf("Erro no cadastro. CPF ja cadastrado!");
             getchar();
              system("cls");
-            CadastrarUsuario(usuario,cont);
+            input=1;
         } 
         else {
             cont++;
@@ -135,10 +118,15 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
         printf("Erro no cadastro! \n");
         getchar();
         system("cls");
-        CadastrarUsuario(usuario,cont);
+        
+         input=1;
+        
         	
     }
-    	
+    
+	if(input==0){
+
+		
 	// -=-=-=-=-=-NOME-=-=-=-=-=-
 	do {
 	 	printf("Nome: ");
@@ -166,7 +154,7 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
 	} while(!ValidarString(nome, MIN_LEN_STRING,MAX_LEN));
 	
 	
-	
+		}
 	
 }
 
@@ -282,42 +270,9 @@ void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], ItemBiblioteca i
 //-=-=-=-=-=-CADASTRAR-=-=-=-=-=-
 void CadastrarItem(ItemBiblioteca itens[], int& cont) {
 
- /*
-   itens[0].codigo = 000001;
-    strcpy(itens[0].tipo_item,"L");
-    strcpy(itens[0].titulo, "Menino Maluquinho");
-    strcpy(itens[0].nome_autor, "Ziraldo");
-    strcpy(itens[0].nome_editora, "Ed. Melhoramentos");
-    itens[0].ano_publicacao = 1980;
-
-    itens[1].codigo = 000002;
-    strcpy(itens[1].tipo_item, "L");
-    strcpy(itens[1].titulo, "Diario de um Banana");
-    strcpy(itens[1].nome_autor, "Jeff Kinney");
-    strcpy(itens[1].nome_editora, "New York Times");
-    itens[1].ano_publicacao = 2007;
-
-    itens[2].codigo = 000003;
-    strcpy(itens[2].tipo_item, "R");
-    strcpy(itens[2].titulo, "Mundo Estranho");
-    strcpy(itens[2].nome_autor, "  ");
-    strcpy(itens[2].nome_editora, "Abril");
-    itens[2].ano_publicacao = 2013;
-
-    itens[3].codigo = 000004;
-    strcpy(itens[3].tipo_item, "R");
-    strcpy(itens[3].titulo, "Epoca");
-    strcpy(itens[3].nome_autor, "  ");
-    strcpy(itens[3].nome_editora, "Globo");
-    itens[3].ano_publicacao = 2021;
-	
-   cont=3;
-   
-    */
-  
    int codigo,ano;
    char tipo[2],titulo[MAX_LEN],autor[MAX_LEN],editora[MAX_LEN_EDITORA];
-   
+   int input=0;
    
    // -=-=-=-=-=-CODIGO-=-=-=-=-=-   	   
     printf("Codigo: ");
@@ -329,7 +284,8 @@ void CadastrarItem(ItemBiblioteca itens[], int& cont) {
             printf("Erro no cadastro. Codigo já cadastrado!");
             getchar();
              system("cls");
-            CadastrarItem(itens,cont);
+             input=1;
+            
         } 
         else {
             cont++;
@@ -339,13 +295,12 @@ void CadastrarItem(ItemBiblioteca itens[], int& cont) {
     else {
         printf("Erro no cadastro! \n");
         getchar();
-        system("cls");
-       CadastrarItem(itens,cont);
-        	
+        system("cls");      
+        input=1;	
     }
     
-    
-    
+    if(input==0){
+
      // -=-=-=-=-=-TIPO-=-=-=-=-=-
 	
 	do{	
@@ -490,12 +445,17 @@ do{
   getchar();
   system("cls");
   
+  
+  
+  	}
+    
+  
 }
 
 //-=-=-=-=-=-VALIDACAO-=-=-=-=-=-
 bool ValidaNumero(int numero,int max , int min) {
 	
-	if(numero >= 0 && numero < 1000000)
+	if(numero > 0 && numero < 1000000)
 		return true;
 	else
 		return false;
@@ -597,53 +557,10 @@ void ListaItens(ItemBiblioteca itens[], int cont) {
 // Emprestimo
 // -=-=-=-=-=-Cadastro-=-=-=-=-=- 
 void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBiblioteca iten[], int& cont_emprestimo, int cont_usuario, int cont_iten) {
-	   
-   /* 
-    emprestimo[0].codigo_emprestimo=000001;
-    emprestimo[0].cpf_emprestimo=15581574766;
-    emprestimo[0].dia_emprestimo= 16;
-    emprestimo[0].mes_emprestimo= 01;
-    emprestimo[0].ano_emprestimo= 2021;   
-    emprestimo[0].dia_devolucao = 14;
-    emprestimo[0].mes_devolucao = 01;
-    emprestimo[0].ano_devolucao = 2021;
-    
-    emprestimo[1].codigo_emprestimo=000002;
-    emprestimo[1].cpf_emprestimo=15581574767;
-    emprestimo[1].dia_emprestimo= 16;
-    emprestimo[1].mes_emprestimo= 01;
-    emprestimo[1].ano_emprestimo= 2021;   
-    emprestimo[1].dia_devolucao = 15;
-    emprestimo[1].mes_devolucao = 01;
-    emprestimo[1].ano_devolucao = 2021;
-  
-    emprestimo[2].codigo_emprestimo=000003;
-    emprestimo[2].cpf_emprestimo=15581574768;
-    emprestimo[2].dia_emprestimo= 16;
-    emprestimo[2].mes_emprestimo= 01;
-    emprestimo[2].ano_emprestimo= 2021;   
-    emprestimo[2].dia_devolucao = 16;
-    emprestimo[2].mes_devolucao = 01;
-    emprestimo[2].ano_devolucao = 2021;
-  
-   emprestimo[3].codigo_emprestimo=000004;
-    emprestimo[3].cpf_emprestimo=15581574769;
-    emprestimo[3].dia_emprestimo= 16;
-    emprestimo[3].mes_emprestimo= 01;
-    emprestimo[3].ano_emprestimo= 2021;   
-    emprestimo[3].dia_devolucao = 17;
-    emprestimo[3].mes_devolucao = 01;
-    emprestimo[3].ano_devolucao = 2021;
-  
-  
- cont=3;
-	   
-	*/
-	
-	
+
 	int codigo,dia,mes,ano;
 	long long int cpf;
-	
+	int input=0;
 	
 	// -=-=-=-=-=-CPF-=-=-=-=-=-   	   
     printf("CPF: ");
@@ -663,23 +580,27 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
             printf("Erro no emprestimo. Usuario ja tem emprestimo!");
             getchar();
            system("cls");
+          
            
-           CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten); 
             
          }else{
          	
          	// -=-=-=-=-=-CADASTRAR CODIGO-=-=-=-=-=-
          	
          	
-         	if(ValidaNumero(codigo,-1,10000)){
+         	if(ValidaNumero(codigo,0,10000)){
          		if(BuscaCodigo(iten,codigo,cont_iten)){
-         			if(BuscaCodigoEmprestimo(emprestimo,codigo,cont_iten)){
+         			if(BuscaCodigoEmprestimo(emprestimo,codigo,cont_emprestimo)){
          				
-         				
+         				printf("Erro no emprestimo. Item já tem emprestimo!");
+                        getchar();
+                        system("cls");
+                         
          				
 					 }else{
 					 	
 					 	cont_emprestimo++;
+					 	
          	            emprestimo[cont_emprestimo].cpf_emprestimo = cpf;
          	            emprestimo[cont_emprestimo].codigo_emprestimo = codigo;
          	         
@@ -709,6 +630,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
          	         printf("Data de emprestimo: %02d/%02d/%d \n",dia,mes,ano);
          	         printf("Data de devolução: %02d/%02d/%d \n",emprestimo[cont_emprestimo].dia_devolucao,emprestimo[cont_emprestimo].mes_devolucao,emprestimo[cont_emprestimo].ano_devolucao);
 					 getchar();
+					 
 					system("cls");	
 					 	
 					 }
@@ -718,7 +640,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
 				 	printf("Erro no emprestimo. Codigo não cadastrado!");
 					getchar();
 					system("cls");
-					CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+					
 				 	
 				 }
          		
@@ -728,7 +650,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
 				getchar();
 				system("cls");
 				
-				CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+			
 			 	
 			 	
 			 }
@@ -740,14 +662,14 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
     	printf("Erro no emprestimo. Usuario não cadastrado!");
         getchar();
         system("cls");
-    	CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+    
 	}    	
 }else{
 	
 	printf("Erro no emprestimo. CPF incorreto!");
 	getchar();
     system("cls");
-		CadastrarEmprestimo(emprestimo,usuario,iten,cont_emprestimo,cont_usuario,cont_iten);
+		
 }
         
 	
@@ -802,16 +724,27 @@ void ListaItensEmprestimo(Emprestimo emprestimo[], ItemBiblioteca iten[], int co
 		  ImprimirEspaco(12);
 		  printf("Emprestimo:");
 		  ImprimirEspaco(0);
-		  printf("00/00/0000");
+		  printf("%02d/%02d/%d",emprestimo[i].dia_emprestimo,emprestimo[i].mes_emprestimo,emprestimo[i].ano_emprestimo);
 		  ImprimirEspaco(0);
 		  printf("a");
 		  ImprimirEspaco(0);
-		  printf("00/00/0000");
+		  printf("%02d/%02d/%d",emprestimo[i].dia_devolucao,emprestimo[i].mes_devolucao,emprestimo[i].ano_devolucao);
 		  printf("\n");
 		  ImprimirEspaco(12);
 		  printf("Tipo: ");
-		  printf("%s",iten[RecuperarTitulo(iten,emprestimo[i].codigo_emprestimo,cont_iten)].tipo_item);	
-		  printf("\n");
+		   if( stricmp (iten[RecuperarTitulo(iten,emprestimo[i].codigo_emprestimo,cont_iten)].tipo_item,"R")==0){
+		   	
+		   	printf("Revista");	
+		    printf("\n");
+		   	
+		   }else{
+		   	
+		   	printf("Livro");	
+		    printf("\n");
+		   	
+		   }
+		  
+		  
 		  ImprimirEspaco(12);
 		  printf("Titulo: ");
 		  printf("%s",iten[RecuperarTitulo(iten,emprestimo[i].codigo_emprestimo,cont_iten)].titulo);
@@ -1122,6 +1055,9 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
         	      	if(prazo==0){
         	      		Devolucao(emprestimo,cpf,cont_emprestimo);
         	      		printf("\nDevolucao realizada com sucesso no prazo!");
+        	      		fflush(stdin);
+        	      		getchar();        	      		
+        	      		system("cls");
         	      		
 					  }else{
 					  	Devolucao(emprestimo,cpf,cont_emprestimo);
@@ -1132,15 +1068,23 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
 					  	
 					  	printf("\n\nDevolucao realizada com atraso de %d dia(s).\n",prazo);
 					  	printf("Multa de R$ %.2f \n", prazo*taxa);
-					  	
+					  	fflush(stdin);
+					  		getchar();        	      		
+        	      		system("cls");
 					  }
         	      	
         	      	
 				  }else{
 				  	printf("Usuario nao tem emprestimo!");
+				  	fflush(stdin);
+        	      		getchar();        	      		
+        	      		system("cls");
 				  }	
 				}else{
 					printf("Usuario não cadastrado!");
+				     	fflush(stdin);
+        	      		getchar();        	      		
+        	      		system("cls");
 				}
 				
             	  break;                
