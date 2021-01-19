@@ -578,7 +578,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
 	
 	// -=-=-=-=-=-CPF-=-=-=-=-=-   	   
     printf("CPF: ");
-    scanf("%lli", &cpf);  		     
+    scanf("%s", &aux);  		     
     fflush(stdin);
     
     printf("Codigo: ");
@@ -779,7 +779,7 @@ void ListaEmprestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca i
 
 	for(int i = 0; i <= cont_emprestimo; i++) {
 
-		  printf("%%011lli",emprestimo[i].cpf_emprestimo);
+		  printf("%011lli",emprestimo[i].cpf_emprestimo);
 		  ImprimirEspaco(0);
 		  		  
 		  printf("%s",usuario[RecuperarNome(usuario,emprestimo[i].cpf_emprestimo,cont_usuario)].nome);		  
