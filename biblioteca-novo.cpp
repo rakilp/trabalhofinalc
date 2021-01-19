@@ -607,7 +607,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
          		if(BuscaCodigo(iten,codigo,cont_iten)){
          			if(BuscaCodigoEmprestimo(emprestimo,codigo,cont_emprestimo)){
          				
-         				printf("Erro no emprestimo. Item já tem emprestimo!");
+         				printf("Erro no emprestimo. Item já emprestado!");
                         getchar();
                         system("cls");
                          
@@ -773,9 +773,9 @@ void ListaItensEmprestimo(Emprestimo emprestimo[], ItemBiblioteca iten[], int co
 void ListaEmprestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca iten[], int cont_emprestimo,int cont_usuario , int cont_iten){
 
 
-  printf("-----------------------------------------------------------------------------------------------------\n");
+  printf("-------------------------------------------------------------------------------------------------------\n");
   printf("CPF         Nome                            Codigo Titulo                          Emprestimo Devolução\n");
-  printf("-----------------------------------------------------------------------------------------------------\n");
+  printf("-------------------------------------------------------------------------------------------------------\n");
 
 	for(int i = 0; i <= cont_emprestimo; i++) {
 
@@ -814,26 +814,24 @@ fflush(stdin);
 // -=-=-=-=-=-Calcular multa -=-=-=-=-=-
 int CalcularMulta (Emprestimo emprestimo[], long long int cpf,int cont_emprestimo,int dia,int mes,int ano){
  
- int result,i,devolucao,dataAtual;
+ int result=0,i,data_devolucao=0,data_entrada=0;
 
 	i=RecuperarData(emprestimo,cpf,cont_emprestimo);
 	
-	devolucao = emprestimo[i].dia_devolucao + (emprestimo[i].mes_devolucao*31 )+ (emprestimo[i].ano_devolucao*365);
 	
-	dataAtual=dia+(mes*31)+(ano*365);
+	data_devolucao = emprestimo[i].dia_devolucao + (emprestimo[i].mes_devolucao*31 )+ (emprestimo[i].ano_devolucao*365);	
+	data_entrada=dia+(mes*31)+(ano*365);
 	
-		if(dataAtual>=devolucao){
-			
-			result =  dataAtual - devolucao;
+	
+	if(data_entrada>data_devolucao){
 		
-			
-		}else{
-			
-			result =  0;
-			
-		}
+		result =  data_entrada -data_devolucao;
+	}else{
 		
 		return result;
+		
+	}
+	
 		
 }
 
@@ -1066,23 +1064,36 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
         	    scanf("%d", &ano);
         	    
         	      	prazo = CalcularMulta(emprestimo,cpf,cont_emprestimo,dia,mes,ano);
+        	      	system("cls");
+        	      	
         	      	
         	      	if(prazo==0){
+        	      		
+        	      		
+        	      		printf("CPF: %lli \n", cpf);
+        	      		printf("Data da devolução: %02d/%02d/%d \n",dia,mes,ano);
+        	      		
+        	      		printf("\n\nNome : %s \n",usuario[RecuperarNome(usuario,cpf,cont_usuario)].nome);
+         	            printf("Titulo : %s \n",iten[RecuperarTitulo(iten,emprestimo[cont_emprestimo].codigo_emprestimo,cont_iten)].titulo);
+        	      		
+						printf("\n\nDevolucao realizada com sucesso no prazo!");
         	      		Devolucao(emprestimo,cpf,cont_emprestimo);
-        	      		printf("\nDevolucao realizada com sucesso no prazo!");
         	      		fflush(stdin);
         	      		getchar();        	      		
         	      		system("cls");
         	      		
 					  }else{
-					  	Devolucao(emprestimo,cpf,cont_emprestimo);
+					  	
+					  	printf("CPF: %lli \n", cpf);
+        	      		printf("Data da devolução: %02d/%02d/%d \n\n",dia,mes,ano);
 					  	
 					  	printf("Nome : %s \n",usuario[RecuperarNome(usuario,cpf,cont_usuario)].nome);
          	            printf("Titulo : %s \n",iten[RecuperarTitulo(iten,emprestimo[cont_emprestimo].codigo_emprestimo,cont_iten)].titulo);
-					  	printf("Data de devolução: %02d/%02d/%d \n",emprestimo[cont_emprestimo].dia_devolucao,emprestimo[cont_emprestimo].mes_devolucao,emprestimo[cont_emprestimo].ano_devolucao);
+         	            printf("Data de devolução: %02d/%02d/%d \n", emprestimo[RecuperarData(emprestimo,cpf,cont_emprestimo)].dia_emprestimo,emprestimo[RecuperarData(emprestimo,cpf,cont_emprestimo)].mes_emprestimo,emprestimo[RecuperarData(emprestimo,cpf,cont_emprestimo)].ano_emprestimo);
 					  	
-					  	printf("\n\nDevolucao realizada com atraso de %d dia(s).\n",prazo);
+					  	printf("\n\n Devolucao realizada com atraso de %d dia(s).\n",prazo);
 					  	printf("Multa de R$ %.2f \n", prazo*taxa);
+					  	Devolucao(emprestimo,cpf,cont_emprestimo);
 					  	fflush(stdin);
 					  		getchar();        	      		
         	      		system("cls");
@@ -1090,13 +1101,15 @@ void MenuEmpestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca ite
         	      	
         	      	
 				  }else{
-				  	printf("Usuario nao tem emprestimo!");
+				  	printf("CPF: %lli \n", cpf);
+				  	printf("\n\nUsuario nao tem emprestimo!");
 				  	fflush(stdin);
         	      		getchar();        	      		
         	      		system("cls");
 				  }	
 				}else{
-					printf("Usuario não cadastrado!");
+					printf("CPF: %lli \n", cpf);
+					printf("\n\nUsuario não cadastrado!");
 				     	fflush(stdin);
         	      		getchar();        	      		
         	      		system("cls");
