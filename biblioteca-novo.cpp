@@ -59,9 +59,10 @@ void StringMaiuscula(char* string);
 
 
 //VALIDAR
-bool ValidaCpf(long long int cpf);
+//bool ValidaCpf(long long int cpf);
 bool ValidarString(char string[], int menor, int maior);
 bool ValidaNumero(int numero,int max , int min);
+bool ValidaCpf(char cpf[]);
 
 //BUSCA
 bool BuscaCpf(Usuario usuario[],long long int cpf,int cont);
@@ -91,19 +92,23 @@ void data_hora_atual(int &dia, int &mes, int &ano) {
 // -=-=-=-=-=-Cadastro-=-=-=-=-=-
 void CadastrarUsuario(Usuario usuario[], int& cont) {
 
-    long long int cpf;
+   long long int cpf;
+   char aux[11];
 	char nome[MAX_LEN];
 	int input=0;
 
     // -=-=-=-=-=-CPF-=-=-=-=-=-   	   
     
-    
-    
     printf("CPF: ");
-    scanf("%lli", &cpf);  		     
+   // scanf("%lli", &cpf);    
+    scanf("%s",&aux);		     
     fflush(stdin);
-        
-    if (ValidaCpf(cpf)) {
+    
+    	    
+    if (ValidaCpf(aux)) {
+    	
+    	cpf= atoll(aux);
+    
         if (BuscaCpf(usuario,cpf,cont)) {
             printf("Erro no cadastro. CPF ja cadastrado!");
             getchar();
@@ -159,13 +164,22 @@ void CadastrarUsuario(Usuario usuario[], int& cont) {
 }
 
 //-=-=-=-=-=-VALIDACAO-=-=-=-=-=-
-bool ValidaCpf(long long int cpf) {
+
+bool ValidaCpf(char cpf[]) {
 	
-	if(cpf > 9999999999 && cpf < 100000000000)
-		return true;
-	else
-		return false;
+	bool result = false;
+	
+	if(strlen(cpf)==11){
+		
+	result = true;	
+		
+	}
+	
+	return result;	
+		
 }
+
+
 
 bool ValidarString(char string[], int menor, int maior){
 	
@@ -249,7 +263,7 @@ void ListarUsuarios(Usuario usuario[], Emprestimo emprestimo[], ItemBiblioteca i
 	printf("--------------------------------------------------\n");
 
 	for(int i = 0; i <= cont_usuario; i++) {
-		printf("%lli", usuario[i].cpf);
+		printf("%011lli", usuario[i].cpf);
 		ImprimirEspaco(1);
 		printf("%s", usuario[i].nome);
 		printf("\n");	
@@ -560,6 +574,7 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
 
 	int codigo,dia,mes,ano;
 	long long int cpf;
+	char aux[11];
 	int input=0;
 	
 	// -=-=-=-=-=-CPF-=-=-=-=-=-   	   
@@ -573,7 +588,8 @@ void CadastrarEmprestimo(Emprestimo emprestimo[], Usuario usuario[], ItemBibliot
     
     // -=-=-=-=-=-CADASTRAR CPF-=-=-=-=-=-
         
-    if (ValidaCpf(cpf)) {
+    if (ValidaCpf(aux)) {
+    	cpf = atoll(aux);
         if (BuscaCpf(usuario,cpf,cont_usuario)) {
         	if(BuscaCpfEmprestimo(emprestimo,cpf,cont_emprestimo)){
         		
@@ -764,7 +780,7 @@ void ListaEmprestimo(Emprestimo emprestimo[], Usuario usuario[],ItemBiblioteca i
 
 	for(int i = 0; i <= cont_emprestimo; i++) {
 
-		  printf("%lli",emprestimo[i].cpf_emprestimo);
+		  printf("%%011lli",emprestimo[i].cpf_emprestimo);
 		  ImprimirEspaco(0);
 		  		  
 		  printf("%s",usuario[RecuperarNome(usuario,emprestimo[i].cpf_emprestimo,cont_usuario)].nome);		  
