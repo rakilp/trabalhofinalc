@@ -59,7 +59,6 @@ void StringMaiuscula(char* string);
 
 
 //VALIDAR
-//bool ValidaCpf(long long int cpf);
 bool ValidarString(char string[], int menor, int maior);
 bool ValidaNumero(int numero,int max , int min);
 bool ValidaCpf(char cpf[]);
